@@ -1,0 +1,6 @@
+packages:
+  - 'challenge-5-prototype'
+  - 'challenge-6-prototype'
+
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,20 @@
+{
+  "name": "challenge-5-feasibility-prototype",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": { "dev": "vite", "build": "tsc -b && vite build", "preview": "vite preview" },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "0.10.35",
+    "@vitejs/plugin-react": "^5.0.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tone": "^15.1.22",
+    "vite": "^7.1.7"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "typescript": "~5.9.3"
+  }
+}
