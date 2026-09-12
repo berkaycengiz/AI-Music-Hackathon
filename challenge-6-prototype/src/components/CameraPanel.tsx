@@ -33,7 +33,7 @@ export function CameraPanel({
           <div className="camera-empty">
             <span className="camera-glyph" aria-hidden="true">◉</span>
             <strong>Camera is off</strong>
-            <span>It starts only when you choose Start instrument.</span>
+            <span>It starts only when you choose Start.</span>
           </div>
         )}
         {cameraOn && <div className="local-badge"><span /> Processed on this device</div>}

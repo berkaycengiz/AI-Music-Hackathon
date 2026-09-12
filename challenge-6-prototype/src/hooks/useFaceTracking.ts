@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { FaceLandmarker, FilesetResolver, type NormalizedLandmark } from '@mediapipe/tasks-vision'
-import { estimateHorizontalHeadPose } from '../lib/headPose'
+import { estimateHorizontalHeadPose, estimateVerticalHeadPose } from '../lib/headPose'
 import type { FaceFrame } from '../types'
 
 const VISION_WASM = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm'
@@ -15,7 +15,7 @@ export function useFaceTracking() {
   const animationRef = useRef(0)
   const lastInferenceRef = useRef(0)
   const [cameraOn, setCameraOn] = useState(false)
-  const [frame, setFrame] = useState<FaceFrame>({ landmarks: null, rawYaw: null, timestamp: 0 })
+  const [frame, setFrame] = useState<FaceFrame>({ landmarks: null, rawYaw: null, rawPitch: null, timestamp: 0 })
 
   const drawFaceGuide = useCallback((landmarks: NormalizedLandmark[] | null) => {
     const canvas = canvasRef.current
@@ -59,7 +59,7 @@ export function useFaceTracking() {
     streamRef.current?.getTracks().forEach((track) => track.stop())
     streamRef.current = null
     setCameraOn(false)
-    setFrame({ landmarks: null, rawYaw: null, timestamp: performance.now() })
+    setFrame({ landmarks: null, rawYaw: null, rawPitch: null, timestamp: performance.now() })
     drawFaceGuide(null)
   }, [drawFaceGuide])
 
@@ -102,6 +102,7 @@ export function useFaceTracking() {
         setFrame({
           landmarks,
           rawYaw: landmarks ? estimateHorizontalHeadPose(landmarks) : null,
+          rawPitch: landmarks ? estimateVerticalHeadPose(landmarks) : null,
           timestamp: now,
         })
       }
