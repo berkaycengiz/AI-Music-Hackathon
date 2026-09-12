@@ -1,0 +1,116 @@
+{
+  "id": "raft-of-medusa",
+  "title": "The Raft of the Medusa (Théodore Géricault)",
+  "sourceImage": "/artworks/raft-of-medusa.jpg",
+  "keyRoot": "C",
+  "scale": "minor",
+  "tempo": 72,
+  "moodDescription": "French Romantic monumental desperation, surging oceanic turbulence, and desperate hope for rescue",
+  "regions": [
+    {
+      "id": "signaling-survivors",
+      "label": "The Signaling Survivors",
+      "spokenLabel": "A pyramid of desperate men clambering upon barrels, straining to wave a red and white cloth at an impossibly distant rescue ship.",
+      "chordcatTrack": 1,
+      "chordName": "Cm(maj7)",
+      "midiNotes": [48, 55, 60, 63, 67, 71],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Straining brass section and dramatic solo trumpet",
+      "polygon": [
+        { "x": 0.62, "y": 0.08 },
+        { "x": 0.85, "y": 0.12 },
+        { "x": 0.90, "y": 0.55 },
+        { "x": 0.60, "y": 0.60 }
+      ],
+      "priority": 5,
+      "attackMs": 180,
+      "releaseMs": 600,
+      "color": "#e74c3c"
+    },
+    {
+      "id": "mourning-father",
+      "label": "The Despairing Father & Dead Youth",
+      "spokenLabel": "An old man sitting lost in grief, cradling the lifeless, pale body of his young son while chaos swirls around him.",
+      "chordcatTrack": 2,
+      "chordName": "Abmaj7#11",
+      "midiNotes": [44, 51, 56, 60, 67, 70],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Somber funeral cello and dark double bassoon",
+      "polygon": [
+        { "x": 0.12, "y": 0.52 },
+        { "x": 0.42, "y": 0.52 },
+        { "x": 0.44, "y": 0.92 },
+        { "x": 0.12, "y": 0.92 }
+      ],
+      "priority": 4,
+      "attackMs": 250,
+      "releaseMs": 700,
+      "color": "#7f8c8d"
+    },
+    {
+      "id": "mast-sail",
+      "label": "Tattered Sail & Makeshift Mast",
+      "spokenLabel": "The diagonal spar and billowing canvas mast straining under the howling gale, pointing toward the turbulent sea.",
+      "chordcatTrack": 3,
+      "chordName": "Fm9",
+      "midiNotes": [41, 48, 53, 56, 60, 65],
+      "musicalRole": "pad",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "Creaking wooden timbers and howling wind drone",
+      "polygon": [
+        { "x": 0.15, "y": 0.05 },
+        { "x": 0.45, "y": 0.12 },
+        { "x": 0.48, "y": 0.65 },
+        { "x": 0.18, "y": 0.58 }
+      ],
+      "priority": 3,
+      "attackMs": 280,
+      "releaseMs": 650,
+      "color": "#d35400"
+    },
+    {
+      "id": "ocean-waves",
+      "label": "Threatening Ocean Surge",
+      "spokenLabel": "Towering blackish-green swells threatening to engulf the fragile raft at any second under a tempestuous sky.",
+      "chordcatTrack": 4,
+      "chordName": "Ebdim7",
+      "midiNotes": [39, 46, 51, 54, 60, 63],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Subterranean sub bass rumble and crashing wave percussion",
+      "polygon": [
+        { "x": 0.0, "y": 0.35 },
+        { "x": 1.0, "y": 0.35 },
+        { "x": 1.0, "y": 0.72 },
+        { "x": 0.0, "y": 0.72 }
+      ],
+      "priority": 2,
+      "attackMs": 300,
+      "releaseMs": 800,
+      "color": "#2c3e50"
+    },
+    {
+      "id": "wooden-raft",
+      "label": "The Submerged Timber Raft",
+      "spokenLabel": "Rough-hewn wooden logs lashed together, half-submerged in the cold brine, littered with dying castaways.",
+      "chordcatTrack": 5,
+      "chordName": "G7alt",
+      "midiNotes": [43, 50, 56, 59, 64, 68],
+      "musicalRole": "accent",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "Percussive wooden marimba and tense arpeggios",
+      "polygon": [
+        { "x": 0.05, "y": 0.72 },
+        { "x": 0.95, "y": 0.72 },
+        { "x": 0.95, "y": 1.0 },
+        { "x": 0.05, "y": 1.0 }
+      ],
+      "priority": 3,
+      "attackMs": 150,
+      "releaseMs": 450,
+      "color": "#8e44ad"
+    }
+  ]
+}

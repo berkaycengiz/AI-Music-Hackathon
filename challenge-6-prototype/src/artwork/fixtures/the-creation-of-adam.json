@@ -1,0 +1,121 @@
+{
+  "id": "creation-of-adam",
+  "title": "The Creation of Adam (Michelangelo)",
+  "sourceImage": "/artworks/creation-of-adam.jpg",
+  "keyRoot": "D",
+  "scale": "dorian",
+  "tempo": 74,
+  "moodDescription": "Renaissance sacred grandeur contrasting earthly solitude with divine creation",
+  "regions": [
+    {
+      "id": "adam",
+      "label": "Adam (Earthly Being)",
+      "spokenLabel": "On the left, Adam lies recumbent upon the grassy hillside, his muscular earthly form yearning upward, waiting for the breath of life.",
+      "chordcatTrack": 1,
+      "chordName": "Dm9",
+      "midiNotes": [50, 57, 62, 65, 69],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Warm solo cello and resonant acoustic bass",
+      "polygon": [
+        { "x": 0.02, "y": 0.55 },
+        { "x": 0.15, "y": 0.38 },
+        { "x": 0.34, "y": 0.35 },
+        { "x": 0.37, "y": 0.65 },
+        { "x": 0.33, "y": 0.85 },
+        { "x": 0.05, "y": 0.84 }
+      ],
+      "priority": 4,
+      "attackMs": 250,
+      "releaseMs": 600,
+      "color": "#c49a45"
+    },
+    {
+      "id": "god-father",
+      "label": "God the Father",
+      "spokenLabel": "God the Father rushes forward enveloped in divine majesty, arm outstretched toward Adam with immense creative power.",
+      "chordcatTrack": 2,
+      "chordName": "Fmaj9",
+      "midiNotes": [53, 60, 64, 67, 72],
+      "musicalRole": "pad",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Cathedral choir and grand pipe organ swell",
+      "polygon": [
+        { "x": 0.44, "y": 0.07 },
+        { "x": 0.68, "y": 0.03 },
+        { "x": 0.88, "y": 0.09 },
+        { "x": 0.87, "y": 0.63 },
+        { "x": 0.45, "y": 0.82 },
+        { "x": 0.42, "y": 0.46 }
+      ],
+      "priority": 4,
+      "attackMs": 280,
+      "releaseMs": 700,
+      "color": "#d9534f"
+    },
+    {
+      "id": "the-near-touch",
+      "label": "The Near Touch (Spark of Life)",
+      "spokenLabel": "The iconic focal point where the index finger of God and the finger of Adam almost touch, suspended in eternal electric anticipation.",
+      "chordcatTrack": 3,
+      "chordName": "A7sus4",
+      "midiNotes": [57, 62, 64, 69, 74, 76],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Luminous crystal harp & celestial bell arpeggios",
+      "polygon": [
+        { "x": 0.32, "y": 0.41 },
+        { "x": 0.43, "y": 0.41 },
+        { "x": 0.43, "y": 0.58 },
+        { "x": 0.32, "y": 0.58 }
+      ],
+      "priority": 5,
+      "attackMs": 140,
+      "releaseMs": 450,
+      "color": "#f1c40f"
+    },
+    {
+      "id": "crimson-cloak",
+      "label": "Crimson Cloak & Cherubim",
+      "spokenLabel": "A billowing red cosmic shroud resembling a human brain, sheltering God and a multitude of wingless angels in swirling harmony.",
+      "chordcatTrack": 4,
+      "chordName": "Bbmaj7#11",
+      "midiNotes": [58, 62, 65, 70, 76],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Swelling orchestral strings and warm brass",
+      "polygon": [
+        { "x": 0.42, "y": 0.12 },
+        { "x": 0.85, "y": 0.08 },
+        { "x": 0.95, "y": 0.45 },
+        { "x": 0.85, "y": 0.92 },
+        { "x": 0.55, "y": 0.85 }
+      ],
+      "priority": 2,
+      "attackMs": 300,
+      "releaseMs": 750,
+      "color": "#9b59b6"
+    },
+    {
+      "id": "sky-landscape",
+      "label": "Landscape & Open Ether",
+      "spokenLabel": "The pale, luminous ether and gentle green slope of Eden, simple and serene, framing the cosmic drama.",
+      "chordcatTrack": 5,
+      "chordName": "Csus2",
+      "midiNotes": [48, 55, 60, 62, 67],
+      "musicalRole": "texture",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "Tranquil open air and gentle wind harmonics",
+      "polygon": [
+        { "x": 0.0, "y": 0.0 },
+        { "x": 0.5, "y": 0.0 },
+        { "x": 0.5, "y": 0.35 },
+        { "x": 0.0, "y": 0.35 }
+      ],
+      "priority": 1,
+      "attackMs": 320,
+      "releaseMs": 800,
+      "color": "#3498db"
+    }
+  ]
+}

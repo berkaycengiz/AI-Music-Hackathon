@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Degree } from '../types'
+
+/** Chordcat degree (1-6). Kept local until Phase 4 MIDI refactor. */
+type Degree = 1 | 2 | 3 | 4 | 5 | 6
 
 type MidiOutputLike = {
   id: string

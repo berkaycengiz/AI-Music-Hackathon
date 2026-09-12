@@ -1,0 +1,119 @@
+{
+  "id": "woman-with-parasol",
+  "title": "Woman with a Parasol (Claude Monet)",
+  "sourceImage": "/artworks/woman-with-parasol.jpg",
+  "keyRoot": "G",
+  "scale": "lydian",
+  "tempo": 90,
+  "moodDescription": "Impressionist plein-air radiance; billowing white muslin and dappled sunlight dancing in a breezy summer meadow",
+  "regions": [
+    {
+      "id": "green-parasol",
+      "label": "The Green Parasol",
+      "spokenLabel": "The bright green parasol tilted against the sun, casting gentle translucent shadows over the lady's face.",
+      "chordcatTrack": 1,
+      "chordName": "Gmaj7#11",
+      "midiNotes": [55, 59, 62, 66, 70, 74],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Bright fluttering wooden flutes & glockenspiel",
+      "polygon": [
+        { "x": 0.26, "y": 0.08 },
+        { "x": 0.44, "y": 0.02 },
+        { "x": 0.62, "y": 0.15 },
+        { "x": 0.52, "y": 0.28 },
+        { "x": 0.32, "y": 0.25 }
+      ],
+      "priority": 4,
+      "attackMs": 140,
+      "releaseMs": 400,
+      "color": "#27ae60"
+    },
+    {
+      "id": "madame-monet",
+      "label": "Madame Monet's Billowing Dress",
+      "spokenLabel": "Madame Monet viewed from below, her voluminous white dress caught by the wind, standing heroically against the summer sky.",
+      "chordcatTrack": 2,
+      "chordName": "Dmaj9",
+      "midiNotes": [50, 57, 62, 66, 69, 73],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Warm chamber violins & gentle acoustic harp",
+      "polygon": [
+        { "x": 0.48, "y": 0.15 },
+        { "x": 0.65, "y": 0.22 },
+        { "x": 0.72, "y": 0.45 },
+        { "x": 0.68, "y": 0.72 },
+        { "x": 0.36, "y": 0.68 },
+        { "x": 0.42, "y": 0.35 }
+      ],
+      "priority": 5,
+      "attackMs": 200,
+      "releaseMs": 600,
+      "color": "#ecf0f1"
+    },
+    {
+      "id": "the-boy-jean",
+      "label": "The Boy (Jean Monet)",
+      "spokenLabel": "Monet's seven-year-old son standing waist-deep in the meadow behind his mother, straw hat resting on his head.",
+      "chordcatTrack": 3,
+      "chordName": "Bm7",
+      "midiNotes": [47, 54, 59, 62, 66],
+      "musicalRole": "accent",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "Delicate music box bell & plucked acoustic pizzicato",
+      "polygon": [
+        { "x": 0.22, "y": 0.52 },
+        { "x": 0.34, "y": 0.52 },
+        { "x": 0.34, "y": 0.70 },
+        { "x": 0.22, "y": 0.70 }
+      ],
+      "priority": 4,
+      "attackMs": 150,
+      "releaseMs": 450,
+      "color": "#f39c12"
+    },
+    {
+      "id": "summer-meadow",
+      "label": "Grass Meadow & Wildflowers",
+      "spokenLabel": "A wild upward-sloping field painted in rapid brushstrokes of ochre, clover, and flecks of brilliant yellow blossoms.",
+      "chordcatTrack": 4,
+      "chordName": "E9",
+      "midiNotes": [40, 47, 52, 56, 62, 66],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Warm upright double bass & strummed acoustic warmth",
+      "polygon": [
+        { "x": 0.0, "y": 0.68 },
+        { "x": 1.0, "y": 0.68 },
+        { "x": 1.0, "y": 1.0 },
+        { "x": 0.0, "y": 1.0 }
+      ],
+      "priority": 2,
+      "attackMs": 220,
+      "releaseMs": 550,
+      "color": "#16a085"
+    },
+    {
+      "id": "windblown-sky",
+      "label": "Azure Sky & Dynamic Clouds",
+      "spokenLabel": "A vibrant blue sky streaked with whipping cirrus clouds echoing the speed and joy of the wind.",
+      "chordcatTrack": 5,
+      "chordName": "A7sus4",
+      "midiNotes": [45, 52, 57, 62, 67, 71],
+      "musicalRole": "pad",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "Airy breathy synth pad & high string harmonics",
+      "polygon": [
+        { "x": 0.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.68 },
+        { "x": 0.0, "y": 0.68 }
+      ],
+      "priority": 1,
+      "attackMs": 300,
+      "releaseMs": 800,
+      "color": "#3498db"
+    }
+  ]
+}

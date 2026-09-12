@@ -1,0 +1,116 @@
+{
+  "id": "landscape-fields",
+  "title": "Landscape with Red Trees (Maurice de Vlaminck)",
+  "sourceImage": "/artworks/landscape-fields.jpg",
+  "keyRoot": "A",
+  "scale": "mixolydian",
+  "tempo": 102,
+  "moodDescription": "Fauvist wild kinetic energy; explosive pure vermilion fields, tempestuous cobalt skies, and raw impasto vitality",
+  "regions": [
+    {
+      "id": "swirling-sky",
+      "label": "Turbulent Cobalt Sky",
+      "spokenLabel": "A restless, dynamic sky rendered in thick impasto strokes of ultramarine, turquoise, and swirling storm-white clouds.",
+      "chordcatTrack": 1,
+      "chordName": "A7",
+      "midiNotes": [45, 52, 57, 61, 64, 67],
+      "musicalRole": "pad",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "Dynamic wind-driven brass & open analog synth",
+      "polygon": [
+        { "x": 0.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.42 },
+        { "x": 0.0, "y": 0.42 }
+      ],
+      "priority": 1,
+      "attackMs": 250,
+      "releaseMs": 650,
+      "color": "#2980b9"
+    },
+    {
+      "id": "vermilion-fields",
+      "label": "Blazing Red & Ochre Fields",
+      "spokenLabel": "Rolling hills of radiant crimson, orange, and cadmium yellow, vibrating with the raw heat of the midday sun.",
+      "chordcatTrack": 2,
+      "chordName": "D9",
+      "midiNotes": [50, 54, 57, 62, 64, 69],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Bright strummed 12-string acoustic & brass warmth",
+      "polygon": [
+        { "x": 0.0, "y": 0.42 },
+        { "x": 1.0, "y": 0.42 },
+        { "x": 1.0, "y": 0.72 },
+        { "x": 0.0, "y": 0.72 }
+      ],
+      "priority": 2,
+      "attackMs": 180,
+      "releaseMs": 550,
+      "color": "#e67e22"
+    },
+    {
+      "id": "foreground-foliage",
+      "label": "Verdant Impasto Shrubs",
+      "spokenLabel": "Thick, expressive curls of deep emerald green and sunny yellow paint forming the rugged foreground hedge.",
+      "chordcatTrack": 3,
+      "chordName": "Gmaj7",
+      "midiNotes": [43, 50, 55, 59, 62, 66],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Heavy acoustic upright bass & deep cello pulse",
+      "polygon": [
+        { "x": 0.0, "y": 0.60 },
+        { "x": 0.75, "y": 0.60 },
+        { "x": 0.75, "y": 1.0 },
+        { "x": 0.0, "y": 1.0 }
+      ],
+      "priority": 4,
+      "attackMs": 200,
+      "releaseMs": 500,
+      "color": "#27ae60"
+    },
+    {
+      "id": "solitary-tree",
+      "label": "The Red Bare Tree",
+      "spokenLabel": "A slender scarlet tree thrusting upward into the sky like a stroke of pure emotional flame on the right hillside.",
+      "chordcatTrack": 4,
+      "chordName": "F#m7",
+      "midiNotes": [54, 57, 61, 66, 69],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Piercing expressive oboe & bright xylophone",
+      "polygon": [
+        { "x": 0.80, "y": 0.08 },
+        { "x": 0.98, "y": 0.08 },
+        { "x": 0.98, "y": 0.65 },
+        { "x": 0.80, "y": 0.65 }
+      ],
+      "priority": 5,
+      "attackMs": 120,
+      "releaseMs": 400,
+      "color": "#c0392b"
+    },
+    {
+      "id": "distant-village",
+      "label": "Red-Roofed Village on the Hill",
+      "spokenLabel": "A tiny cluster of terracotta-roofed village cottages resting peacefully against the green horizon line.",
+      "chordcatTrack": 5,
+      "chordName": "Bm7",
+      "midiNotes": [47, 54, 59, 62, 66],
+      "musicalRole": "accent",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "French accordion & lively folk violin arpeggios",
+      "polygon": [
+        { "x": 0.42, "y": 0.38 },
+        { "x": 0.68, "y": 0.38 },
+        { "x": 0.68, "y": 0.48 },
+        { "x": 0.42, "y": 0.48 }
+      ],
+      "priority": 3,
+      "attackMs": 150,
+      "releaseMs": 450,
+      "color": "#f39c12"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "id": "wanderer-fog",
+  "title": "Wanderer above the Sea of Fog (Caspar David Friedrich)",
+  "sourceImage": "/artworks/wanderer-fog.jpg",
+  "keyRoot": "B",
+  "scale": "minor",
+  "tempo": 68,
+  "moodDescription": "German Romantic sublime contemplation; solitary reflection gazing over an infinite sea of swirling mountain mist",
+  "regions": [
+    {
+      "id": "the-wanderer",
+      "label": "The Solitary Wanderer",
+      "spokenLabel": "A lone traveler in a dark green frock coat standing resolute on the precipice, back turned, hair stirred by the mountain wind.",
+      "chordcatTrack": 1,
+      "chordName": "Bm9",
+      "midiNotes": [47, 54, 59, 62, 66, 70],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Solo melancholic English horn & expressive cello",
+      "polygon": [
+        { "x": 0.42, "y": 0.32 },
+        { "x": 0.55, "y": 0.32 },
+        { "x": 0.60, "y": 0.48 },
+        { "x": 0.58, "y": 0.74 },
+        { "x": 0.40, "y": 0.74 },
+        { "x": 0.38, "y": 0.52 }
+      ],
+      "priority": 5,
+      "attackMs": 200,
+      "releaseMs": 600,
+      "color": "#2c3e50"
+    },
+    {
+      "id": "rocky-crag",
+      "label": "Rocky Summit Crag",
+      "spokenLabel": "The jagged, weathered volcanic rock mass thrusting upward through the clouds, anchoring the wanderer's stance.",
+      "chordcatTrack": 2,
+      "chordName": "F#m7",
+      "midiNotes": [42, 49, 54, 57, 61],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Resonant granite sub-bass & bowed contrabass",
+      "polygon": [
+        { "x": 0.0, "y": 0.88 },
+        { "x": 0.25, "y": 0.65 },
+        { "x": 0.55, "y": 0.62 },
+        { "x": 0.75, "y": 0.75 },
+        { "x": 0.95, "y": 0.82 },
+        { "x": 1.0, "y": 1.0 },
+        { "x": 0.0, "y": 1.0 }
+      ],
+      "priority": 3,
+      "attackMs": 240,
+      "releaseMs": 700,
+      "color": "#7f8c8d"
+    },
+    {
+      "id": "sea-of-fog",
+      "label": "The Swirling Sea of Fog",
+      "spokenLabel": "An ocean of dense, billowing white clouds rolling like phantom waves through the mountain valleys below.",
+      "chordcatTrack": 3,
+      "chordName": "Em11",
+      "midiNotes": [40, 47, 55, 59, 62, 66],
+      "musicalRole": "texture",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "Lowpass ambient choral mist & slow tape echo",
+      "polygon": [
+        { "x": 0.0, "y": 0.42 },
+        { "x": 1.0, "y": 0.42 },
+        { "x": 1.0, "y": 0.75 },
+        { "x": 0.0, "y": 0.75 }
+      ],
+      "priority": 2,
+      "attackMs": 350,
+      "releaseMs": 850,
+      "color": "#ecf0f1"
+    },
+    {
+      "id": "distant-peaks",
+      "label": "Distant Mountain Peaks",
+      "spokenLabel": "Silent mountain ranges in the far distance rising like islands through the mist into the pale sky.",
+      "chordcatTrack": 4,
+      "chordName": "Gmaj7",
+      "midiNotes": [55, 59, 62, 66, 71],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "Alpine French horns & serene brass swells",
+      "polygon": [
+        { "x": 0.02, "y": 0.25 },
+        { "x": 0.48, "y": 0.26 },
+        { "x": 0.45, "y": 0.45 },
+        { "x": 0.02, "y": 0.45 }
+      ],
+      "priority": 3,
+      "attackMs": 280,
+      "releaseMs": 650,
+      "color": "#95a5a6"
+    },
+    {
+      "id": "vast-sky",
+      "label": "Infinite Pale Sky",
+      "spokenLabel": "The pale, luminous atmosphere above, vast and serene, blending into infinite space.",
+      "chordcatTrack": 5,
+      "chordName": "A6/9",
+      "midiNotes": [45, 52, 57, 61, 64, 69],
+      "musicalRole": "pad",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "High string harmonics and delicate glass bells",
+      "polygon": [
+        { "x": 0.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.35 },
+        { "x": 0.0, "y": 0.35 }
+      ],
+      "priority": 1,
+      "attackMs": 320,
+      "releaseMs": 800,
+      "color": "#bdc3c7"
+    }
+  ]
+}

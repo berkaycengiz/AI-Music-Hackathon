@@ -4,3 +4,6 @@ node_modules/
 .sites-runtime/
 dist/
 **/dist/
+.env
+.env.*
+*.env

@@ -1,6 +1,6 @@
-# Challenge 6 — Accessible music prototype
+# Challenge 6 — Hands-free live arranger
 
-A local browser prototype that adapts to a participant's comfortable four-direction head movement. After one helper click for browser permissions, the participant can shape music, pause, resume, start over, and end the session without using their hands. Music theory and hardware controls stay outside the participant experience.
+A local browser prototype for performing a complete arrangement without playing individual notes. After one helper click, a participant can move through musical sections and continuously shape the performance with their available head movement.
 
 ## Run
 
@@ -14,9 +14,9 @@ Open the local URL in current Chrome or Edge, choose **Enable camera & begin**, 
 ## Participant interaction
 
 - A layered arrangement with drums, bass, harmony, and melody begins after setup.
-- Turn right to explore a new harmonic path or left to bring it home.
-- Look up briefly to build the arrangement; look down briefly to strip layers back.
-- Hold up, then return to center, to open the hands-free control menu.
+- Turn right to advance through Intro, Groove, Build, Drop, Break, and Finale; turn left to return.
+- Vertical head position continuously shapes energy, filtering, dynamics, and active instrument layers.
+- Double blink to open or close the hands-free control menu.
 - In the menu, turn left/right to choose, look down to select, or look up to go back.
 - Pause/resume, a fresh arrangement, and ending the session live in the head-controlled menu.
 
@@ -28,11 +28,11 @@ Open the collapsed **Helper setup** panel to tune sensitivity, gesture hold, coo
 
 - MediaPipe face tracking derives horizontal yaw and vertical pitch locally; frames are neither recorded nor uploaded.
 - Personal four-direction calibration, smoothing, dominant-axis selection, gesture hold, return-to-center confirmation, face-loss recovery, and cooldown prevent repeated frame-level triggers.
-- A deterministic context-aware harmony layer keeps every action compatible without exposing chords or notes.
-- A four-part arrangement engine continuously performs drums, bass, pad harmony, and a melodic motif; vertical movement changes the actual layer density and timbre.
+- A section-based arrangement engine performs distinct drum patterns, bass behavior, pad harmony, and melodic motifs for each part of the performance.
+- The participant controls musical form and expression without being asked to select chords or notes.
 - Accepted actions are quantized to the next beat.
 - Web MIDI targets Chordcat when available; Tone.js remains the software-audio fallback.
-- A complete starting arrangement plays immediately and horizontal movement rewrites upcoming sections without stopping the flow.
+- Section changes are quantized and keep the music flowing while the performance state changes.
 
 ## Boundaries
 

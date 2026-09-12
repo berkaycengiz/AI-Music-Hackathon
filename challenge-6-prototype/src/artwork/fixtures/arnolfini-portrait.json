@@ -1,0 +1,119 @@
+{
+  "id": "arnolfini-portrait",
+  "title": "The Arnolfini Portrait (Jan van Eyck)",
+  "sourceImage": "/artworks/arnolfini-portrait.jpg",
+  "keyRoot": "D",
+  "scale": "dorian",
+  "tempo": 78,
+  "moodDescription": "Early Flemish Renaissance intimacy; luminous sacred domesticity, velvet drapery, and solemn marital vows",
+  "regions": [
+    {
+      "id": "giovanni-arnolfini",
+      "label": "Giovanni Arnolfini (The Merchant)",
+      "spokenLabel": "The tall, austere Italian merchant raising his right hand in solemn pledge, draped in a heavy fur-trimmed purple tabard and dark hat.",
+      "chordcatTrack": 1,
+      "chordName": "Dm11",
+      "midiNotes": [50, 57, 60, 65, 69, 72],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Renaissance viola da gamba & solemn wooden organ",
+      "polygon": [
+        { "x": 0.06, "y": 0.12 },
+        { "x": 0.40, "y": 0.10 },
+        { "x": 0.48, "y": 0.45 },
+        { "x": 0.42, "y": 0.88 },
+        { "x": 0.15, "y": 0.90 }
+      ],
+      "priority": 4,
+      "attackMs": 220,
+      "releaseMs": 600,
+      "color": "#8e44ad"
+    },
+    {
+      "id": "giovanna-cenami",
+      "label": "Giovanna Cenami (The Bride)",
+      "spokenLabel": "The bride in a magnificent voluminous green woolen gown lined with white ermine fur, head bowed gracefully in quiet devotion.",
+      "chordcatTrack": 2,
+      "chordName": "Fmaj7#11",
+      "midiNotes": [53, 57, 60, 64, 71],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Bright Flemish harpsichord & chamber strings",
+      "polygon": [
+        { "x": 0.58, "y": 0.18 },
+        { "x": 0.82, "y": 0.18 },
+        { "x": 0.95, "y": 0.52 },
+        { "x": 0.96, "y": 0.95 },
+        { "x": 0.54, "y": 0.95 },
+        { "x": 0.58, "y": 0.48 }
+      ],
+      "priority": 4,
+      "attackMs": 240,
+      "releaseMs": 650,
+      "color": "#27ae60"
+    },
+    {
+      "id": "the-joined-hands",
+      "label": "The Joined Hands (Sacred Vow)",
+      "spokenLabel": "The tender physical center of the painting where the groom gently cradles the bride's open right palm.",
+      "chordcatTrack": 3,
+      "chordName": "Am9",
+      "midiNotes": [57, 60, 64, 67, 71],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Intimate classical Renaissance lute & silver bell",
+      "polygon": [
+        { "x": 0.46, "y": 0.38 },
+        { "x": 0.60, "y": 0.38 },
+        { "x": 0.60, "y": 0.48 },
+        { "x": 0.46, "y": 0.48 }
+      ],
+      "priority": 5,
+      "attackMs": 130,
+      "releaseMs": 400,
+      "color": "#f1c40f"
+    },
+    {
+      "id": "convex-mirror",
+      "label": "Convex Mirror & Chandelier",
+      "spokenLabel": "A miniature brass chandelier with one burning candle hanging above a round convex mirror reflecting the entire room and two hidden witnesses.",
+      "chordcatTrack": 4,
+      "chordName": "Csus2",
+      "midiNotes": [48, 55, 60, 62, 67],
+      "musicalRole": "pad",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "High wooden organ flutes & cathedral reverb",
+      "polygon": [
+        { "x": 0.40, "y": 0.03 },
+        { "x": 0.60, "y": 0.03 },
+        { "x": 0.60, "y": 0.36 },
+        { "x": 0.40, "y": 0.36 }
+      ],
+      "priority": 3,
+      "attackMs": 280,
+      "releaseMs": 750,
+      "color": "#d35400"
+    },
+    {
+      "id": "dog-pattens",
+      "label": "The Loyal Dog & Wooden Pattens",
+      "spokenLabel": "A shaggy Brussels griffon dog standing between the couple symbolising steadfast fidelity, beside wooden outdoor clogs on the floor.",
+      "chordcatTrack": 5,
+      "chordName": "Em7",
+      "midiNotes": [40, 47, 52, 55, 59],
+      "musicalRole": "accent",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "Gentle wooden clavichord & warm pizzicato",
+      "polygon": [
+        { "x": 0.02, "y": 0.82 },
+        { "x": 0.52, "y": 0.82 },
+        { "x": 0.52, "y": 1.0 },
+        { "x": 0.02, "y": 1.0 }
+      ],
+      "priority": 2,
+      "attackMs": 150,
+      "releaseMs": 450,
+      "color": "#e67e22"
+    }
+  ]
+}

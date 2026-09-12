@@ -1,0 +1,129 @@
+{
+  "id": "the-scream",
+  "title": "The Scream (Edvard Munch)",
+  "sourceImage": "/artworks/the-scream.jpg",
+  "keyRoot": "D",
+  "scale": "minor",
+  "tempo": 88,
+  "moodDescription": "Existential dread and emotional tension under a blood-red sky",
+  "regions": [
+    {
+      "id": "screaming-figure",
+      "label": "The Screaming Figure",
+      "spokenLabel": "A gaunt, ghostly figure at the center, hands pressed to its face, mouth wide open in an eternal scream, draped in dark clothing.",
+      "chordcatTrack": 1,
+      "chordName": "Ddim7",
+      "midiNotes": [50, 56, 59, 62, 68],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Distorted expressive cello and dissonant lead",
+      "polygon": [
+        { "x": 0.36, "y": 0.47 },
+        { "x": 0.52, "y": 0.46 },
+        { "x": 0.64, "y": 0.50 },
+        { "x": 0.66, "y": 0.75 },
+        { "x": 0.60, "y": 0.97 },
+        { "x": 0.42, "y": 1.0 },
+        { "x": 0.34, "y": 0.65 }
+      ],
+      "priority": 5,
+      "attackMs": 180,
+      "releaseMs": 600,
+      "color": "#ff3b30"
+    },
+    {
+      "id": "fiery-sky",
+      "label": "Fiery Sky",
+      "spokenLabel": "A blazing sky of swirling red and orange bands, rippling like waves of heat across the entire upper portion of the painting.",
+      "chordcatTrack": 2,
+      "chordName": "Bb7#9",
+      "midiNotes": [58, 62, 68, 73, 77],
+      "musicalRole": "pad",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Ominous shimmering brass and high tension harmonics",
+      "polygon": [
+        { "x": 0.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.32 },
+        { "x": 0.92, "y": 0.39 },
+        { "x": 0.08, "y": 0.37 },
+        { "x": 0.0, "y": 0.28 }
+      ],
+      "priority": 4,
+      "attackMs": 280,
+      "releaseMs": 700,
+      "color": "#e8430a"
+    },
+    {
+      "id": "bridge",
+      "label": "Bridge & Railing",
+      "spokenLabel": "A wooden bridge with strong diagonal railings stretching from the foreground into the distance, with two shadowy figures walking away.",
+      "chordcatTrack": 3,
+      "chordName": "Gm6",
+      "midiNotes": [55, 58, 62, 64, 67],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Heavy wooden contrabass and creaking resonant pulse",
+      "polygon": [
+        { "x": 0.0, "y": 0.36 },
+        { "x": 0.45, "y": 0.62 },
+        { "x": 0.92, "y": 0.92 },
+        { "x": 0.95, "y": 1.0 },
+        { "x": 0.0, "y": 1.0 },
+        { "x": 0.0, "y": 0.52 }
+      ],
+      "priority": 3,
+      "attackMs": 150,
+      "releaseMs": 450,
+      "color": "#c48833"
+    },
+    {
+      "id": "fjord",
+      "label": "Fjord Waters",
+      "spokenLabel": "Deep blue swirling waters of the fjord, with dark undulating currents and a pale yellow shoreline glowing in the distance.",
+      "chordcatTrack": 4,
+      "chordName": "Dm(maj7)",
+      "midiNotes": [50, 57, 61, 65, 69],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "Dark flowing arpeggiated piano and watery textures",
+      "polygon": [
+        { "x": 0.0, "y": 0.28 },
+        { "x": 0.92, "y": 0.39 },
+        { "x": 0.95, "y": 0.55 },
+        { "x": 0.82, "y": 0.62 },
+        { "x": 0.55, "y": 0.55 },
+        { "x": 0.20, "y": 0.48 },
+        { "x": 0.0, "y": 0.45 }
+      ],
+      "priority": 3,
+      "attackMs": 240,
+      "releaseMs": 600,
+      "color": "#1a4a8a"
+    },
+    {
+      "id": "swirling-shore",
+      "label": "Swirling Shoreline",
+      "spokenLabel": "The right side of the painting where the earth and water merge in sweeping curves of ochre, green, and deep blue.",
+      "chordcatTrack": 5,
+      "chordName": "A7b9",
+      "midiNotes": [57, 61, 64, 67, 70],
+      "musicalRole": "texture",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "Swelling distorted wind drone",
+      "polygon": [
+        { "x": 0.55, "y": 0.40 },
+        { "x": 0.95, "y": 0.38 },
+        { "x": 1.0, "y": 0.55 },
+        { "x": 0.98, "y": 0.80 },
+        { "x": 0.85, "y": 0.95 },
+        { "x": 0.65, "y": 0.85 },
+        { "x": 0.58, "y": 0.60 }
+      ],
+      "priority": 2,
+      "attackMs": 300,
+      "releaseMs": 700,
+      "color": "#4e7d42"
+    }
+  ]
+}

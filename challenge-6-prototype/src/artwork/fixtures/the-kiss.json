@@ -1,0 +1,119 @@
+{
+  "id": "the-kiss",
+  "title": "The Kiss (Gustav Klimt)",
+  "sourceImage": "/artworks/the-kiss.jpg",
+  "keyRoot": "Eb",
+  "scale": "major",
+  "tempo": 76,
+  "moodDescription": "Art Nouveau golden luminescence, intimate romantic embrace, and shimmering floral bliss",
+  "regions": [
+    {
+      "id": "man-cloak",
+      "label": "The Man's Geometric Cloak",
+      "spokenLabel": "The man's golden cloak, adorned with masculine black and white rectangular blocks, radiating structural warmth.",
+      "chordcatTrack": 1,
+      "chordName": "Ebmaj9",
+      "midiNotes": [51, 58, 62, 65, 70],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Warm resonant French horn and rich analog synth brass",
+      "polygon": [
+        { "x": 0.28, "y": 0.08 },
+        { "x": 0.52, "y": 0.05 },
+        { "x": 0.52, "y": 0.35 },
+        { "x": 0.48, "y": 0.75 },
+        { "x": 0.32, "y": 0.78 },
+        { "x": 0.26, "y": 0.35 }
+      ],
+      "priority": 3,
+      "attackMs": 220,
+      "releaseMs": 600,
+      "color": "#f1c40f"
+    },
+    {
+      "id": "woman-gown",
+      "label": "The Woman's Floral Gown",
+      "spokenLabel": "The kneeling woman clothed in organic circular motifs and delicate multicolored flowers, surrendering into the embrace.",
+      "chordcatTrack": 2,
+      "chordName": "Cm11",
+      "midiNotes": [48, 55, 63, 67, 70, 74],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Lush orchestral strings and harp shimmer",
+      "polygon": [
+        { "x": 0.45, "y": 0.22 },
+        { "x": 0.68, "y": 0.18 },
+        { "x": 0.75, "y": 0.55 },
+        { "x": 0.75, "y": 0.78 },
+        { "x": 0.48, "y": 0.75 }
+      ],
+      "priority": 3,
+      "attackMs": 260,
+      "releaseMs": 650,
+      "color": "#e67e22"
+    },
+    {
+      "id": "the-faces",
+      "label": "The Lovers' Tender Embrace",
+      "spokenLabel": "The intimate faces pressed together; the man tenderly kissing her cheek as she closes her eyes in complete tranquility.",
+      "chordcatTrack": 3,
+      "chordName": "Abmaj7#11",
+      "midiNotes": [56, 60, 67, 72, 74],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Solo romantic violin & celesta chime",
+      "polygon": [
+        { "x": 0.42, "y": 0.04 },
+        { "x": 0.65, "y": 0.05 },
+        { "x": 0.65, "y": 0.22 },
+        { "x": 0.42, "y": 0.22 }
+      ],
+      "priority": 5,
+      "attackMs": 140,
+      "releaseMs": 450,
+      "color": "#ff9ff3"
+    },
+    {
+      "id": "flower-meadow",
+      "label": "Wildflower Meadow on Cliff Edge",
+      "spokenLabel": "A tapestry of brilliant blue, violet, and golden wildflowers cascading down to the edge of the world.",
+      "chordcatTrack": 4,
+      "chordName": "Fm9",
+      "midiNotes": [53, 60, 65, 68, 72],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "Plucked nylon acoustic guitar & delicate pizzicato",
+      "polygon": [
+        { "x": 0.0, "y": 0.72 },
+        { "x": 1.0, "y": 0.72 },
+        { "x": 1.0, "y": 1.0 },
+        { "x": 0.0, "y": 1.0 }
+      ],
+      "priority": 2,
+      "attackMs": 180,
+      "releaseMs": 500,
+      "color": "#2ecc71"
+    },
+    {
+      "id": "gold-halo",
+      "label": "Golden Stippled Void",
+      "spokenLabel": "The ethereal golden bronze background, timeless and infinite, suspending the lovers beyond earthly reality.",
+      "chordcatTrack": 5,
+      "chordName": "Bb7sus4",
+      "midiNotes": [46, 53, 58, 63, 68],
+      "musicalRole": "texture",
+      "dynamicBehavior": "drone",
+      "timbreDescription": "Ethereal warm gold bell drone and shimmering pad",
+      "polygon": [
+        { "x": 0.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.0 },
+        { "x": 1.0, "y": 0.72 },
+        { "x": 0.0, "y": 0.72 }
+      ],
+      "priority": 1,
+      "attackMs": 350,
+      "releaseMs": 900,
+      "color": "#d4af37"
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "id": "geometric-demo",
+  "title": "Geometric Sonic Canvas (Demo)",
+  "sourceImage": "",
+  "keyRoot": "D",
+  "scale": "minor-pentatonic",
+  "tempo": 92,
+  "moodDescription": "Abstract geometric playground testing multi-track groovebox voicing",
+  "regions": [
+    {
+      "id": "region-1",
+      "label": "River Flow",
+      "spokenLabel": "A wide diagonal river band carrying cool harmonic tones across the bottom",
+      "chordcatTrack": 1,
+      "chordName": "Dm7",
+      "midiNotes": [50, 57, 60, 65],
+      "musicalRole": "harmony",
+      "dynamicBehavior": "arpeggio",
+      "timbreDescription": "Flowing gentle electric piano",
+      "polygon": [
+        { "x": 0.0, "y": 0.65 },
+        { "x": 0.35, "y": 0.55 },
+        { "x": 0.7, "y": 0.7 },
+        { "x": 1.0, "y": 0.6 },
+        { "x": 1.0, "y": 0.95 },
+        { "x": 0.6, "y": 1.0 },
+        { "x": 0.0, "y": 0.9 }
+      ],
+      "priority": 3,
+      "attackMs": 200,
+      "releaseMs": 500,
+      "color": "#4a90d9"
+    },
+    {
+      "id": "region-2",
+      "label": "Trees Canopy",
+      "spokenLabel": "Dense tree foliage rustling with warm rhythmic textures on the left",
+      "chordcatTrack": 2,
+      "chordName": "Fmaj7",
+      "midiNotes": [53, 57, 60, 64],
+      "musicalRole": "pad",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Warm mellow strings",
+      "polygon": [
+        { "x": 0.05, "y": 0.2 },
+        { "x": 0.3, "y": 0.15 },
+        { "x": 0.35, "y": 0.45 },
+        { "x": 0.1, "y": 0.5 }
+      ],
+      "priority": 2,
+      "attackMs": 250,
+      "releaseMs": 600,
+      "color": "#2d8a4e"
+    },
+    {
+      "id": "region-3",
+      "label": "Birds in Flight",
+      "spokenLabel": "A high flock of birds in the upper sky singing delicate melodic motifs",
+      "chordcatTrack": 3,
+      "chordName": "Am9",
+      "midiNotes": [69, 72, 76, 79, 83],
+      "musicalRole": "melody",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Crystal bell chimes",
+      "polygon": [
+        { "x": 0.35, "y": 0.08 },
+        { "x": 0.55, "y": 0.05 },
+        { "x": 0.52, "y": 0.2 },
+        { "x": 0.32, "y": 0.22 }
+      ],
+      "priority": 4,
+      "attackMs": 100,
+      "releaseMs": 400,
+      "color": "#72ead7"
+    },
+    {
+      "id": "region-4",
+      "label": "Morning Sun",
+      "spokenLabel": "A warm radiant morning sun filling the upper right corner with bright shimmer",
+      "chordcatTrack": 4,
+      "chordName": "Cadd9",
+      "midiNotes": [60, 64, 67, 72, 74],
+      "musicalRole": "accent",
+      "dynamicBehavior": "sparkle",
+      "timbreDescription": "Radiant warm brass pad",
+      "polygon": [
+        { "x": 0.72, "y": 0.08 },
+        { "x": 0.92, "y": 0.05 },
+        { "x": 0.95, "y": 0.25 },
+        { "x": 0.75, "y": 0.28 }
+      ],
+      "priority": 3,
+      "attackMs": 150,
+      "releaseMs": 500,
+      "color": "#f5a623"
+    },
+    {
+      "id": "region-5",
+      "label": "Distant Mountain",
+      "spokenLabel": "A massive weathered mountain ridge standing strong on the far right",
+      "chordcatTrack": 5,
+      "chordName": "Gm",
+      "midiNotes": [43, 50, 55, 58],
+      "musicalRole": "bass",
+      "dynamicBehavior": "sustained-chord",
+      "timbreDescription": "Deep sub bass drone",
+      "polygon": [
+        { "x": 0.55, "y": 0.3 },
+        { "x": 0.85, "y": 0.25 },
+        { "x": 0.98, "y": 0.55 },
+        { "x": 0.65, "y": 0.6 }
+      ],
+      "priority": 1,
+      "attackMs": 300,
+      "releaseMs": 800,
+      "color": "#7b6b8a"
+    }
+  ]
+}
