@@ -1,6 +1,19 @@
 /** 2D point in normalized artwork coordinates [0,1] × [0,1] */
 export type Point = { x: number; y: number };
 
+/** Two musical interpretations exposed by the prototype comparison control. */
+export type ExperienceMode = 'region-chords' | 'full-composition';
+
+/** Live, normalized mix state for one artwork region / ChordCat track. */
+export interface TrackMixState {
+  regionId: string;
+  label: string;
+  track: number;
+  level: number;
+  role: MusicalRole;
+  state: 'bed' | 'blend' | 'focus';
+}
+
 /** Musical roles for regions within the groovebox arrangement */
 export type MusicalRole = 'bass' | 'harmony' | 'melody' | 'pad' | 'accent' | 'texture';
 

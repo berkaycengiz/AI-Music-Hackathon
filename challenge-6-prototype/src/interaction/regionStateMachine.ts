@@ -11,8 +11,6 @@ interface InternalState {
   lifecycle: RegionLifecycle;
   /** Timestamp when the current lifecycle state was entered */
   since: number;
-  /** Timestamp when the last ACTIVE period ended (for cooldown) */
-  lastExitAt: number;
 }
 
 /**
@@ -25,6 +23,7 @@ interface InternalState {
 export class RegionStateMachine {
   private state: InternalState;
   private config: RegionTimingConfig;
+  private lastExitByRegion = new Map<string, number>();
 
   constructor(config: Partial<RegionTimingConfig> = {}) {
     this.config = { ...DEFAULT_TIMING, ...config };
@@ -32,7 +31,6 @@ export class RegionStateMachine {
       regionId: null,
       lifecycle: 'INACTIVE',
       since: 0,
-      lastExitAt: 0,
     };
   }
 
@@ -67,12 +65,8 @@ export class RegionStateMachine {
     switch (s.lifecycle) {
       case 'INACTIVE': {
         if (hitRegionId) {
-          // Check retrigger cooldown
-          if (
-            hitRegionId === s.regionId &&
-            s.lastExitAt > 0 &&
-            now - s.lastExitAt < this.config.retriggerCooldownMs
-          ) {
+          const lastExitAt = this.lastExitByRegion.get(hitRegionId) ?? 0;
+          if (lastExitAt > 0 && now - lastExitAt < this.config.retriggerCooldownMs) {
             // Still in cooldown for this region — ignore
             break;
           }
@@ -123,7 +117,7 @@ export class RegionStateMachine {
           // Grace period expired → exit
           const exitId = s.regionId!;
           s.lifecycle = 'INACTIVE';
-          s.lastExitAt = now;
+          this.lastExitByRegion.set(exitId, now);
           events.push({ type: 'exit', regionId: exitId });
 
           // If a new region is already being hit, immediately start candidate
@@ -155,8 +149,8 @@ export class RegionStateMachine {
       regionId: null,
       lifecycle: 'INACTIVE',
       since: 0,
-      lastExitAt: 0,
     };
+    this.lastExitByRegion.clear();
     return events;
   }
 

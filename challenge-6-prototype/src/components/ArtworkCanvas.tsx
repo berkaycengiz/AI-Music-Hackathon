@@ -1,9 +1,17 @@
-import { useRef, useEffect, useCallback, type MouseEvent } from 'react';
-import type { Point, ArtworkDefinition, ArtworkRegion } from '../artwork/artworkTypes';
+import { useRef, useEffect, useCallback, useReducer, useState, type MouseEvent } from 'react';
+import type {
+  Point,
+  ArtworkDefinition,
+  ExperienceMode,
+  TrackMixState,
+} from '../artwork/artworkTypes';
+import { polygonCenter } from '../artwork/regionLookup';
 import { samplePixelMetrics, type PixelMetrics } from '../artwork/pixelAnalysis';
 
 interface Props {
   artwork: ArtworkDefinition;
+  mode: ExperienceMode;
+  trackMix: TrackMixState[];
   activeRegionId: string | null;
   candidateRegionId: string | null;
   mousePos: Point | null;
@@ -11,15 +19,10 @@ interface Props {
   disabled?: boolean;
 }
 
-/** Region fill colors (with alpha) */
-const REGION_ALPHA_IDLE = 0.18;
-const REGION_ALPHA_CANDIDATE = 0.30;
-const REGION_ALPHA_ACTIVE = 0.45;
-const BORDER_WIDTH_IDLE = 1.5;
-const BORDER_WIDTH_ACTIVE = 3;
-
 export function ArtworkCanvas({
   artwork,
+  mode,
+  trackMix,
   activeRegionId,
   candidateRegionId,
   mousePos,
@@ -29,56 +32,65 @@ export function ArtworkCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const sourceCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [aspectRatio, setAspectRatio] = useState(16 / 9);
+  const [renderVersion, redraw] = useReducer((value: number) => value + 1, 0);
 
-  // Load artwork image whenever artwork source changes
   useEffect(() => {
     if (!artwork.sourceImage) {
       imgRef.current = null;
+      sourceCanvasRef.current = null;
+      setAspectRatio(1);
+      redraw();
       return;
     }
+
+    imgRef.current = null;
+    sourceCanvasRef.current = null;
     const img = new Image();
     img.src = artwork.sourceImage;
     img.onload = () => {
       imgRef.current = img;
-      // Trigger redraw
-      if (canvasRef.current) {
-        canvasRef.current.dispatchEvent(new Event('resize'));
-      }
+      setAspectRatio(img.naturalWidth / img.naturalHeight);
+
+      const source = document.createElement('canvas');
+      source.width = img.naturalWidth;
+      source.height = img.naturalHeight;
+      source.getContext('2d')?.drawImage(img, 0, 0);
+      sourceCanvasRef.current = source;
+      redraw();
     };
     img.onerror = () => {
       imgRef.current = null;
+      sourceCanvasRef.current = null;
+      redraw();
     };
   }, [artwork.sourceImage]);
 
-  // Convert mouse event to normalized artwork coordinates
   const handleMouse = useCallback(
-    (e: MouseEvent<HTMLCanvasElement>) => {
+    (event: MouseEvent<HTMLCanvasElement>) => {
       if (disabled) return;
       const canvas = canvasRef.current;
       if (!canvas) return;
 
       const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-
       const normPos = {
-        x: Math.max(0, Math.min(1, x)),
-        y: Math.max(0, Math.min(1, y)),
+        x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
+        y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)),
       };
 
-      const ctx = canvas.getContext('2d');
-      const metrics = ctx ? samplePixelMetrics(ctx, normPos, canvas.width, canvas.height) : null;
-
+      const source = sourceCanvasRef.current;
+      const sourceCtx = source?.getContext('2d');
+      const metrics = source && sourceCtx
+        ? samplePixelMetrics(sourceCtx, normPos, source.width, source.height)
+        : null;
       onMouseMove(normPos, metrics);
     },
     [onMouseMove, disabled],
   );
 
-  const handleMouseLeave = useCallback(() => {
-    onMouseMove(null, null);
-  }, [onMouseMove]);
+  const handleMouseLeave = useCallback(() => onMouseMove(null, null), [onMouseMove]);
 
-  // Draw artwork regions and fingertip indicator
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -87,179 +99,125 @@ export function ArtworkCanvas({
 
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
     ctx.scale(dpr, dpr);
     const w = rect.width;
     const h = rect.height;
 
-    // Clear
     ctx.clearRect(0, 0, w, h);
-
-    // Background: dark surface or real artwork image
     ctx.fillStyle = '#12151c';
     ctx.fillRect(0, 0, w, h);
 
     if (imgRef.current) {
       ctx.save();
-      ctx.globalAlpha = 0.88;
+      ctx.globalAlpha = 0.94;
       ctx.drawImage(imgRef.current, 0, 0, w, h);
       ctx.restore();
     }
 
-    // Draw subtle grid for orientation
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 10; i++) {
-      const gx = (i / 10) * w;
-      const gy = (i / 10) * h;
-      ctx.beginPath();
-      ctx.moveTo(gx, 0);
-      ctx.lineTo(gx, h);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, gy);
-      ctx.lineTo(w, gy);
-      ctx.stroke();
-    }
-
-    // Draw regions
+    const mixByRegion = new Map(trackMix.map((track) => [track.regionId, track]));
     for (const region of artwork.regions) {
+      const center = polygonCenter(region.polygon);
+      const x = center.x * w;
+      const y = center.y * h;
+      const mix = mixByRegion.get(region.id);
       const isActive = region.id === activeRegionId;
       const isCandidate = region.id === candidateRegionId && !isActive;
+      const level = mode === 'full-composition'
+        ? mix?.level ?? 0.1
+        : isActive
+          ? 1
+          : isCandidate
+            ? 0.62
+            : 0.18;
+      const isFocus = mode === 'full-composition' ? mix?.state === 'focus' : isActive;
       const color = region.color || '#72ead7';
+      const glowRadius = 15 + level * 25;
+      const pointRadius = 4.5 + level * 3.5;
 
-      // Fill
-      const alpha = isActive
-        ? REGION_ALPHA_ACTIVE
-        : isCandidate
-          ? REGION_ALPHA_CANDIDATE
-          : REGION_ALPHA_IDLE;
-      ctx.fillStyle = hexToRgba(color, alpha);
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
+      glow.addColorStop(0, hexToRgba(color, 0.25 + level * 0.2));
+      glow.addColorStop(0.28, hexToRgba(color, 0.12 + level * 0.1));
+      glow.addColorStop(1, hexToRgba(color, 0));
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      drawPolygon(ctx, region.polygon, w, h);
+      ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      // Border
-      ctx.strokeStyle = isActive
-        ? color
-        : hexToRgba(color, 0.5);
-      ctx.lineWidth = isActive ? BORDER_WIDTH_ACTIVE : BORDER_WIDTH_IDLE;
+      ctx.save();
+      ctx.shadowColor = color;
+      ctx.shadowBlur = isFocus ? 16 : 5;
+      ctx.fillStyle = isFocus ? '#f5ffd0' : color;
       ctx.beginPath();
-      drawPolygon(ctx, region.polygon, w, h);
+      ctx.arc(x, y, pointRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.strokeStyle = hexToRgba(color, isFocus ? 0.95 : 0.48 + level * 0.35);
+      ctx.lineWidth = isFocus ? 2 : 1;
+      ctx.beginPath();
+      ctx.arc(x, y, pointRadius + 5 + level * 3, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Label
-      const center = polygonCenter(region.polygon);
-      ctx.fillStyle = isActive ? '#ffffff' : 'rgba(255,255,255,0.6)';
-      ctx.font = `${isActive ? 'bold ' : ''}${Math.max(12, w * 0.028)}px system-ui, sans-serif`;
-      ctx.textAlign = 'center';
+      ctx.fillStyle = isFocus ? '#f5ffd0' : 'rgba(255,255,255,0.7)';
+      ctx.font = `${isFocus ? '700' : '600'} 9px "Cascadia Code", monospace`;
+      ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(region.label, center.x * w, center.y * h);
-
-      // Active glow effect
-      if (isActive) {
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 15;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        drawPolygon(ctx, region.polygon, w, h);
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-      }
+      ctx.fillText(`T${region.chordcatTrack}`, x + pointRadius + 8, y);
     }
 
-    // Draw fingertip indicator
     if (mousePos) {
-      const px = mousePos.x * w;
-      const py = mousePos.y * h;
-
-      // Outer ring
+      const x = mousePos.x * w;
+      const y = mousePos.y * h;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.arc(px, py, 12, 0, Math.PI * 2);
-      ctx.strokeStyle = activeRegionId
-        ? '#72ead7'
-        : 'rgba(255, 255, 255, 0.6)';
-      ctx.lineWidth = 2;
+      ctx.arc(x, y, 10, 0, Math.PI * 2);
       ctx.stroke();
-
-      // Inner dot
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(px, py, 4, 0, Math.PI * 2);
-      ctx.fillStyle = activeRegionId ? '#72ead7' : '#ffffff';
+      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
       ctx.fill();
-
-      // Crosshair lines
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(px, 0);
-      ctx.lineTo(px, h);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, py);
-      ctx.lineTo(w, py);
-      ctx.stroke();
-      ctx.setLineDash([]);
     }
-  }, [artwork, activeRegionId, candidateRegionId, mousePos]);
+  }, [
+    artwork,
+    mode,
+    trackMix,
+    activeRegionId,
+    candidateRegionId,
+    mousePos,
+    renderVersion,
+  ]);
 
-  // Handle resize
   useEffect(() => {
-    const observer = new ResizeObserver(() => {
-      // Trigger re-render by updating canvas dimensions
-      const canvas = canvasRef.current;
-      if (canvas) {
-        canvas.dispatchEvent(new Event('resize'));
-      }
-    });
+    const observer = new ResizeObserver(redraw);
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={containerRef} className="artwork-canvas-container">
+    <div ref={containerRef} className="artwork-canvas-container" style={{ aspectRatio }}>
       <canvas
         ref={canvasRef}
         className="artwork-canvas"
         onMouseMove={handleMouse}
         onMouseLeave={handleMouseLeave}
         style={{ cursor: disabled ? 'default' : 'none' }}
+        aria-label={`${artwork.title} with ${artwork.regions.length} musical centers`}
       />
     </div>
   );
 }
 
-// ── Helpers ────────────────────────────────────────────────────
-
-function drawPolygon(
-  ctx: CanvasRenderingContext2D,
-  polygon: Point[],
-  w: number,
-  h: number,
-) {
-  if (polygon.length === 0) return;
-  ctx.moveTo(polygon[0].x * w, polygon[0].y * h);
-  for (let i = 1; i < polygon.length; i++) {
-    ctx.lineTo(polygon[i].x * w, polygon[i].y * h);
-  }
-  ctx.closePath();
-}
-
-function polygonCenter(polygon: Point[]): Point {
-  let cx = 0, cy = 0;
-  for (const p of polygon) {
-    cx += p.x;
-    cy += p.y;
-  }
-  return { x: cx / polygon.length, y: cy / polygon.length };
-}
-
 function hexToRgba(hex: string, alpha: number): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  const value = hex.replace('#', '');
+  const expanded = value.length === 3
+    ? value.split('').map((character) => character + character).join('')
+    : value;
+  const numeric = Number.parseInt(expanded, 16);
+  const red = (numeric >> 16) & 255;
+  const green = (numeric >> 8) & 255;
+  const blue = numeric & 255;
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }

@@ -13,8 +13,7 @@ export function pointInPolygon(point: Point, polygon: Point[]): boolean {
     const xi = polygon[i].x, yi = polygon[i].y;
     const xj = polygon[j].x, yj = polygon[j].y;
 
-    // Check if point is on a horizontal edge
-    if (yi === yj && yi === y && x >= Math.min(xi, xj) && x <= Math.max(xi, xj)) {
+    if (pointOnSegment(point, polygon[j], polygon[i])) {
       return true;
     }
 
@@ -40,6 +39,30 @@ export function polygonArea(polygon: Point[]): number {
     area -= polygon[i].x * polygon[j].y;
   }
   return Math.abs(area) / 2;
+}
+
+/** Area-weighted visual center, with a safe fallback for degenerate polygons. */
+export function polygonCenter(polygon: Point[]): Point {
+  if (polygon.length === 0) return { x: 0.5, y: 0.5 };
+
+  let signedArea = 0;
+  let x = 0;
+  let y = 0;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i, i += 1) {
+    const cross = polygon[j].x * polygon[i].y - polygon[i].x * polygon[j].y;
+    signedArea += cross;
+    x += (polygon[j].x + polygon[i].x) * cross;
+    y += (polygon[j].y + polygon[i].y) * cross;
+  }
+
+  if (Math.abs(signedArea) < 1e-8) {
+    return polygon.reduce(
+      (center, point) => ({ x: center.x + point.x / polygon.length, y: center.y + point.y / polygon.length }),
+      { x: 0, y: 0 },
+    );
+  }
+
+  return { x: x / (3 * signedArea), y: y / (3 * signedArea) };
 }
 
 /**
@@ -90,13 +113,19 @@ export function findRegion(
     return polygonArea(a.polygon) - polygonArea(b.polygon);
   });
 
-  // If the active region is among the hits, prefer it (hysteresis / stickiness)
-  if (activeRegionId) {
-    const activeHit = hits.find((r) => r.id === activeRegionId);
-    if (activeHit) return activeHit;
-  }
-
   return hits[0];
+}
+
+function pointOnSegment(point: Point, a: Point, b: Point, epsilon = 1e-7): boolean {
+  const cross = (point.y - a.y) * (b.x - a.x) - (point.x - a.x) * (b.y - a.y);
+  if (Math.abs(cross) > epsilon) return false;
+
+  return (
+    point.x >= Math.min(a.x, b.x) - epsilon &&
+    point.x <= Math.max(a.x, b.x) + epsilon &&
+    point.y >= Math.min(a.y, b.y) - epsilon &&
+    point.y <= Math.max(a.y, b.y) + epsilon
+  );
 }
 
 /**

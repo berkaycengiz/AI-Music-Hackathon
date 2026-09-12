@@ -1,299 +1,334 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import type { Point, AppState, ArtworkDefinition } from './artwork/artworkTypes';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type {
+  AppState,
+  ExperienceMode,
+  Point,
+  RegionLifecycle,
+  TrackMixState,
+} from './artwork/artworkTypes';
 import type { PixelMetrics } from './artwork/pixelAnalysis';
-import { findRegion } from './artwork/regionLookup';
+import { findRegion, polygonCenter } from './artwork/regionLookup';
 import { RegionStateMachine } from './interaction/regionStateMachine';
 import { ObjectSoundEngine } from './audio/ObjectSoundEngine';
 import { SpeechNarration } from './audio/speechNarration';
 import { ArtworkCanvas } from './components/ArtworkCanvas';
 import { DebugPanel } from './components/DebugPanel';
-
-// Built-in curated museum artworks with complete ChordCat 8-track scores
 import { CURATED_ARTWORKS } from './artwork/fixtures';
 
+const MODE_COPY: Record<ExperienceMode, { label: string; short: string }> = {
+  'region-chords': {
+    label: 'Region Chords',
+    short: 'Each area performs its own harmonic gesture.',
+  },
+  'full-composition': {
+    label: 'Full Composition',
+    short: 'Distance from each musical center continuously blends every stem.',
+  },
+};
+
 export default function App() {
-  // ── Artworks state (all 9 curated masterpieces) ────────────────
   const artworks = CURATED_ARTWORKS;
-  const [selectedArtworkKey, setSelectedArtworkKey] = useState<string>('creation-of-adam');
+  const [selectedArtworkKey, setSelectedArtworkKey] = useState('creation-of-adam');
   const currentArtwork = artworks[selectedArtworkKey] || CURATED_ARTWORKS['creation-of-adam'];
 
-  // ── Application state ──────────────────────────────────────────
   const [appState, setAppState] = useState<AppState>('idle');
+  const [experienceMode, setExperienceMode] = useState<ExperienceMode>('region-chords');
   const [mousePos, setMousePos] = useState<Point | null>(null);
   const [currentPixelMetrics, setCurrentPixelMetrics] = useState<PixelMetrics | null>(null);
-  const [filterCutoff, setFilterCutoff] = useState<number>(2200);
-
+  const [filterCutoff, setFilterCutoff] = useState(2200);
   const [activeRegionId, setActiveRegionId] = useState<string | null>(null);
   const [candidateRegionId, setCandidateRegionId] = useState<string | null>(null);
-  const [lifecycle, setLifecycle] = useState<string>('INACTIVE');
+  const [lifecycle, setLifecycle] = useState<RegionLifecycle>('INACTIVE');
   const [dwellMs, setDwellMs] = useState(0);
   const [playingSounds, setPlayingSounds] = useState<string[]>([]);
+  const [trackMix, setTrackMix] = useState<TrackMixState[]>([]);
 
-  // ── Speech Narration & MIDI state ──────────────────────────────
   const [isNarrationEnabled, setIsNarrationEnabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [, setMidiVersion] = useState(0);
 
-  // ── Imperative systems refs ────────────────────────────────────
   const soundEngine = useRef(new ObjectSoundEngine());
   const narration = useRef(new SpeechNarration());
   const stateMachine = useRef(new RegionStateMachine());
+  const latestInput = useRef<{ pos: Point | null; metrics: PixelMetrics | null }>({
+    pos: null,
+    metrics: null,
+  });
 
-  // ── Start experience (unlocks AudioContext & SpeechSynthesis) ──
-  const startExperience = useCallback(async () => {
-    await soundEngine.current.initialize();
-    soundEngine.current.onMidiStateChange = () => setMidiVersion((v) => v + 1);
-    setAppState('exploring');
-  }, []);
-
-  // ── Stop all sound & cancel speech ─────────────────────────────
-  const handleStopAll = useCallback(() => {
-    soundEngine.current.stopAll();
-    narration.current.cancel();
-    setIsSpeaking(false);
+  const resetInteraction = useCallback(() => {
     stateMachine.current.reset();
+    latestInput.current = { pos: null, metrics: null };
+    setMousePos(null);
+    setCurrentPixelMetrics(null);
     setActiveRegionId(null);
     setCandidateRegionId(null);
     setLifecycle('INACTIVE');
     setDwellMs(0);
     setPlayingSounds([]);
+    setTrackMix([]);
   }, []);
 
-  // ── Switch artwork ─────────────────────────────────────────────
-  const handleSwitchArtwork = useCallback(
-    (key: string) => {
-      handleStopAll();
-      setSelectedArtworkKey(key);
-    },
-    [handleStopAll],
-  );
+  const cancelNarration = useCallback(() => {
+    narration.current.cancel();
+    soundEngine.current.setNarrationDucking(false);
+    setIsSpeaking(false);
+  }, []);
 
-  // ── Main loop: mouse + pixel analysis → filter modulation → region lookup → sound + narration ──
-  const processInput = useCallback(
-    (pos: Point | null, metrics?: PixelMetrics | null) => {
-      setMousePos(pos);
-      setCurrentPixelMetrics(metrics || null);
+  const speakRegion = useCallback((text: string) => {
+    narration.current.speak(
+      text,
+      () => {
+        setIsSpeaking(true);
+        soundEngine.current.setNarrationDucking(true);
+      },
+      () => {
+        setIsSpeaking(false);
+        soundEngine.current.setNarrationDucking(false);
+      },
+    );
+  }, []);
 
-      if (appState !== 'exploring') return;
+  const startExperience = useCallback(async () => {
+    await soundEngine.current.initialize();
+    soundEngine.current.onMidiStateChange = () => setMidiVersion((version) => version + 1);
+    setAppState('exploring');
+  }, []);
 
-      // Real-time pixel brightness & warmth modulation of sound timbre
-      if (metrics) {
-        soundEngine.current.updateModulation(metrics.brightness, metrics.warmth);
+  const handleStopAll = useCallback(() => {
+    soundEngine.current.stopAll();
+    cancelNarration();
+    resetInteraction();
+    setAppState('idle');
+  }, [cancelNarration, resetInteraction]);
+
+  const handleSwitchArtwork = useCallback((key: string) => {
+    soundEngine.current.stopAll();
+    cancelNarration();
+    resetInteraction();
+    setSelectedArtworkKey(key);
+  }, [cancelNarration, resetInteraction]);
+
+  const handleModeChange = useCallback((mode: ExperienceMode) => {
+    if (mode === experienceMode) return;
+    soundEngine.current.stopAll();
+    cancelNarration();
+    resetInteraction();
+    setExperienceMode(mode);
+  }, [cancelNarration, experienceMode, resetInteraction]);
+
+  // Mode/artwork changes restart the sound architecture without leaving exploration.
+  useEffect(() => {
+    if (appState !== 'exploring' || !soundEngine.current.isInitialized) return;
+    soundEngine.current.startMode(experienceMode, currentArtwork);
+    setTrackMix(soundEngine.current.getTrackMixSnapshot());
+    return () => soundEngine.current.stopAll();
+  }, [appState, currentArtwork, experienceMode]);
+
+  const handlePointerInput = useCallback((pos: Point | null, metrics?: PixelMetrics | null) => {
+    const nextMetrics = metrics || null;
+    latestInput.current = { pos, metrics: nextMetrics };
+    setMousePos(pos);
+    setCurrentPixelMetrics(nextMetrics);
+
+    if (appState === 'exploring') {
+      if (experienceMode === 'full-composition') soundEngine.current.setSpatialMix(pos);
+      if (nextMetrics) {
+        soundEngine.current.updateModulation(nextMetrics.brightness, nextMetrics.warmth);
         setFilterCutoff(soundEngine.current.cutoffHz);
       }
+    }
+  }, [appState, experienceMode]);
 
+  // A stable 30 Hz interaction clock lets dwell finish even when the mouse is still.
+  useEffect(() => {
+    if (appState !== 'exploring') return;
+
+    const timer = window.setInterval(() => {
       const now = performance.now();
-
-      // Find which region the pointer is in
+      const { pos } = latestInput.current;
       const hitRegion = pos
         ? findRegion(currentArtwork.regions, pos, stateMachine.current.activeRegionId)
         : null;
+      const events = stateMachine.current.update(hitRegion?.id ?? null, now);
 
-      // Update state machine
-      const events = stateMachine.current.update(
-        hitRegion?.id ?? null,
-        now,
-      );
-
-      // Process events → trigger / release rich polyphonic chord voicings & English narration
       for (const event of events) {
-        const region = currentArtwork.regions.find((r) => r.id === event.regionId);
+        const region = currentArtwork.regions.find((item) => item.id === event.regionId);
         if (!region) continue;
 
         if (event.type === 'enter') {
-          soundEngine.current.startRegionSound(region);
-
-          // English Speech Narration for blind visitors
-          if (region.spokenLabel) {
-            narration.current.speak(
-              region.spokenLabel,
-              () => setIsSpeaking(true),
-              () => setIsSpeaking(false),
-            );
-          }
-        } else if (event.type === 'exit') {
+          if (experienceMode === 'region-chords') soundEngine.current.startRegionSound(region);
+          if (region.spokenLabel) speakRegion(region.spokenLabel);
+        } else if (experienceMode === 'region-chords') {
           soundEngine.current.stopRegionSound(region.id, region.releaseMs);
         }
       }
 
-      // Update display state
+      const mix = soundEngine.current.getTrackMixSnapshot();
+      setTrackMix(mix);
       setActiveRegionId(stateMachine.current.activeRegionId);
       setCandidateRegionId(stateMachine.current.currentRegionId);
       setLifecycle(stateMachine.current.lifecycle);
       setDwellMs(Math.round(stateMachine.current.dwellTime(now)));
+      setPlayingSounds(
+        experienceMode === 'full-composition'
+          ? mix.filter((track) => track.state === 'focus').map((track) => track.label)
+          : currentArtwork.regions
+              .filter((region) => soundEngine.current.isPlaying(region.id))
+              .map((region) => region.label),
+      );
+    }, 33);
 
-      // Active playing regions list
-      const activeIds: string[] = [];
-      for (const region of currentArtwork.regions) {
-        if (soundEngine.current.isPlaying(region.id)) {
-          activeIds.push(region.label);
-        }
+    return () => window.clearInterval(timer);
+  }, [appState, currentArtwork, experienceMode, speakRegion]);
+
+  const handleTriggerRegion = useCallback((regionId: string) => {
+    if (!soundEngine.current.isInitialized) return;
+    const region = currentArtwork.regions.find((item) => item.id === regionId);
+    if (!region) return;
+
+    if (experienceMode === 'full-composition') {
+      const isFocused = soundEngine.current
+        .getTrackMixSnapshot()
+        .some((track) => track.regionId === region.id && track.state === 'focus');
+      soundEngine.current.setSpatialMix(isFocused ? null : polygonCenter(region.polygon));
+      const metrics = latestInput.current.metrics;
+      if (!isFocused && metrics) {
+        soundEngine.current.updateModulation(metrics.brightness, metrics.warmth);
       }
-      setPlayingSounds(activeIds);
-    },
-    [appState, currentArtwork],
-  );
+    } else if (soundEngine.current.isPlaying(region.id)) {
+      soundEngine.current.stopRegionSound(region.id, region.releaseMs);
+    } else {
+      soundEngine.current.startRegionSound(region);
+    }
+    setTrackMix(soundEngine.current.getTrackMixSnapshot());
+  }, [currentArtwork, experienceMode]);
 
-  // ── Manual region trigger ──────────────────────────────────────
-  const handleTriggerRegion = useCallback(
-    (regionId: string) => {
-      if (!soundEngine.current.isInitialized) return;
-
-      const region = currentArtwork.regions.find((r) => r.id === regionId);
-      if (!region) return;
-
-      if (soundEngine.current.isPlaying(region.id)) {
-        soundEngine.current.stopRegionSound(region.id, region.releaseMs);
-        narration.current.cancel();
-        setIsSpeaking(false);
-      } else {
-        soundEngine.current.stopAll();
-        soundEngine.current.startRegionSound(region);
-
-        if (region.spokenLabel) {
-          narration.current.speak(
-            region.spokenLabel,
-            () => setIsSpeaking(true),
-            () => setIsSpeaking(false),
-          );
-        }
-      }
-
-      setTimeout(() => {
-        const activeIds: string[] = [];
-        for (const r of currentArtwork.regions) {
-          if (soundEngine.current.isPlaying(r.id)) {
-            activeIds.push(r.label);
-          }
-        }
-        setPlayingSounds(activeIds);
-      }, 50);
-    },
-    [currentArtwork],
-  );
-
-  // ── Keyboard: Escape = stop all ────────────────────────────────
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        handleStopAll();
-      }
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') handleStopAll();
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [handleStopAll]);
 
-  // ── Render ─────────────────────────────────────────────────────
   return (
     <div className="app-shell">
-      {/* Header */}
       <header className="app-header">
-        <div className="header-left">
+        <div className="brand-block">
           <h1 className="app-title">Museum Sonic Explorer</h1>
-          <span className="app-badge">AlphaTheta ChordCat Engine</span>
+          <span className="app-badge">CHORDCAT-ready</span>
+        </div>
 
+        <div className="header-center">
           <div className="artwork-selector-wrap">
-            <label htmlFor="artwork-select" className="selector-label">
-              Artwork:
-            </label>
+            <label htmlFor="artwork-select" className="selector-label">Artwork</label>
             <select
               id="artwork-select"
               className="artwork-select"
               value={selectedArtworkKey}
-              onChange={(e) => handleSwitchArtwork(e.target.value)}
+              onChange={(event) => handleSwitchArtwork(event.target.value)}
             >
-              {Object.entries(artworks).map(([key, item]) => (
-                <option key={key} value={key}>
-                  {item.title}
-                </option>
+              {Object.entries(artworks).map(([key, artwork]) => (
+                <option key={key} value={key}>{artwork.title}</option>
               ))}
             </select>
+          </div>
+
+          <div className="mode-switch" role="group" aria-label="Musical interpretation">
+            {(Object.keys(MODE_COPY) as ExperienceMode[]).map((mode) => (
+              <button
+                key={mode}
+                className={`mode-button ${experienceMode === mode ? 'active' : ''}`}
+                aria-pressed={experienceMode === mode}
+                onClick={() => handleModeChange(mode)}
+              >
+                <span className="mode-dot" />
+                {MODE_COPY[mode].label}
+              </button>
+            ))}
           </div>
         </div>
 
         <div className="header-right">
           <button
             className={`header-narration-btn ${isNarrationEnabled ? 'active' : 'muted'}`}
-            onClick={() => {
-              const next = narration.current.toggle();
-              setIsNarrationEnabled(next);
-            }}
-            title="Toggle English voice narration for blind visitors"
+            onClick={() => setIsNarrationEnabled(narration.current.toggle())}
+            title="Toggle English voice narration"
           >
-            {isNarrationEnabled ? '🔊 English Voice Guide' : '🔇 Voice Muted'}
+            {isNarrationEnabled ? 'Voice on' : 'Voice off'}
           </button>
-
           <span className={`status-pill ${appState}`}>
-            {appState === 'idle' && '● Idle'}
-            {appState === 'exploring' && '● Exploring'}
+            {appState === 'idle' ? '● Ready' : '● Exploring'}
           </span>
           {appState === 'exploring' && (
-            <button className="header-stop-btn" onClick={handleStopAll}>
-              ■ Stop Sound
-            </button>
+            <button className="header-stop-btn" onClick={handleStopAll}>■ Stop</button>
           )}
         </div>
       </header>
 
-      {/* Main content */}
+      <div className="mode-story" aria-live="polite">
+        <span className="mode-story-label">{MODE_COPY[experienceMode].label}</span>
+        <span>{MODE_COPY[experienceMode].short}</span>
+        {experienceMode === 'full-composition' && (
+          <span className="transport-status">● {currentArtwork.tempo} BPM · continuous transport</span>
+        )}
+      </div>
+
       <main className="app-main">
-        {/* Start screen */}
         {appState === 'idle' && (
           <div className="start-overlay">
             <div className="start-card">
-              <h2>Tactile Museum Explorer</h2>
-              <p>Explore masterworks through touch, harmonious chords, and adaptive musical stems.</p>
-              <p className="start-desc">
-                {currentArtwork.moodDescription ||
-                  'Each region triggers a dedicated track on the musical groovebox. As you move across bright or dark areas, the filter cutoff breathes dynamically.'}
+              <span className="eyebrow">Performative tactile exploration</span>
+              <h2>Play the painting.</h2>
+              <p>
+                Move across the artwork to reveal its spatial story through narration,
+                harmony and an adaptive instrumental mix.
               </p>
-              <p className="start-meta">
-                <strong>{currentArtwork.title}</strong> · {currentArtwork.regions.length} tracks ·{' '}
-                {currentArtwork.keyRoot} {currentArtwork.scale} ({currentArtwork.tempo} BPM)
-              </p>
-              <button className="start-btn" onClick={startExperience}>
-                Start Experience
-              </button>
-              <p className="start-hint">
-                Press <kbd>Esc</kbd> to stop all sound / panic off
-              </p>
+              <p className="start-desc">{currentArtwork.moodDescription}</p>
+              <div className="start-meta-grid">
+                <span><strong>{currentArtwork.regions.length}</strong> regions</span>
+                <span><strong>{currentArtwork.keyRoot} {currentArtwork.scale}</strong> score</span>
+                <span><strong>{currentArtwork.tempo}</strong> BPM</span>
+              </div>
+              <button className="start-btn" onClick={startExperience}>Begin exploration</button>
+              <p className="start-hint">Mouse input currently simulates a fingertip on the tactile relief.</p>
             </div>
           </div>
         )}
 
-        {/* Artwork canvas */}
         <div className="canvas-area">
           <ArtworkCanvas
             artwork={currentArtwork}
+            mode={experienceMode}
+            trackMix={trackMix}
             activeRegionId={activeRegionId}
             candidateRegionId={candidateRegionId}
             mousePos={mousePos}
-            onMouseMove={processInput}
+            onMouseMove={handlePointerInput}
             disabled={appState !== 'exploring'}
           />
         </div>
 
-        {/* Debug / Facilitator panel */}
         <aside className="debug-area">
           <DebugPanel
             artwork={currentArtwork}
+            mode={experienceMode}
+            trackMix={trackMix}
             mousePos={mousePos}
             activeRegionId={activeRegionId}
-            lifecycle={lifecycle as any}
+            lifecycle={lifecycle}
             dwellMs={dwellMs}
             playingSounds={playingSounds}
             pixelMetrics={currentPixelMetrics}
             cutoffHz={filterCutoff}
+            midiDeviceId={soundEngine.current.midiDeviceId}
             midiDeviceName={soundEngine.current.midiDeviceName}
             isMidiConnected={soundEngine.current.isMidiConnected}
             midiPorts={soundEngine.current.getMidiPorts()}
             onSelectMidiPort={(id) => soundEngine.current.selectMidiPortById(id)}
-            onTestTrack={(trackNum) => soundEngine.current.testTrack(trackNum)}
+            onTestTrack={(track) => soundEngine.current.testTrack(track)}
             isNarrationEnabled={isNarrationEnabled}
-            onToggleNarration={() => {
-              const next = narration.current.toggle();
-              setIsNarrationEnabled(next);
-            }}
+            onToggleNarration={() => setIsNarrationEnabled(narration.current.toggle())}
             isSpeaking={isSpeaking}
             activeVoiceName={narration.current.activeVoiceName}
             onStopAll={handleStopAll}

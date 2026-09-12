@@ -1,39 +1,51 @@
-# Challenge 6 — Hands-free live arranger
+# Challenge 6 — Museum Sonic Explorer
 
-A local browser prototype for performing a complete arrangement without playing individual notes. After one helper click, a participant can move through musical sections and continuously shape the performance with their available head movement.
+An accessible tactile-music installation prototype for Challenge 6. A visitor explores a relief reproduction of a painting and performs its musical interpretation through position, dwell, and movement. The screen uses the mouse as a temporary fingertip simulator; the installation target is the tactile surface plus CHORDCAT.
 
-## Run
+## Two experiences to compare
+
+### Region Chords
+
+The current region performs its own curated chord or motif. This version makes cause and effect explicit and is useful for testing whether visitors understand the spatial interaction.
+
+### Full Composition
+
+Each artwork has one continuous, deterministic score. Every semantic region owns a musical center and stem. Proximity continuously blends all stems between their role-specific 10–18% minimum and full focus, while the complete composition keeps playing. Position never becomes a literal object sound effect.
+
+Both modes share the same artwork data, region geometry, narration, color-driven timbre, dwell protection, and facilitator controls, so the comparison tests the musical model rather than a different interface.
+
+## Run locally
 
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
-Open the local URL in current Chrome or Edge, choose **Enable camera & begin**, allow camera access, and follow the center/right/left/up/down calibration prompts.
+Open the Vite URL, choose an artwork and experience, then select **Begin exploration**. Move the mouse across the painting and pause over a highlighted region. Press Escape or use **Stop all sound** for an immediate audio and MIDI panic.
 
-## Participant interaction
+## Prototype interaction
 
-- A layered arrangement with drums, bass, harmony, and melody begins after setup.
-- Turn right to advance through Intro, Groove, Build, Drop, Break, and Finale; turn left to return.
-- Vertical head position continuously shapes energy, filtering, dynamics, and active instrument layers.
-- Double blink to open or close the hands-free control menu.
-- In the menu, turn left/right to choose, look down to select, or look up to go back.
-- Pause/resume, a fresh arrangement, and ending the session live in the head-controlled menu.
+- Curated polygons remain invisible semantic maps for narration; only their musical center points appear on the artwork.
+- A 140 ms dwell prevents accidental boundary triggers without requiring continued pointer movement.
+- Overlap priority and hysteresis keep region changes stable.
+- Text-to-speech names and describes the region; narration briefly ducks the score.
+- Brightness and warmth sampled from the clean source image continuously shape filter and expression.
+- The facilitator console exposes lifecycle, dwell, active region, sampled color, live stem levels, MIDI routing, and test controls.
 
-## Facilitator controls
+## CHORDCAT architecture
 
-Open the collapsed **Helper setup** panel to tune sensitivity, gesture hold, cooldown, and tempo; select a Web MIDI output and channel; test configured mappings; or simulate every direction. The four arrow keys mirror head movement and Escape stops all sound.
+CHORDCAT is the eventual sound engine **and** physical controller, not the user-facing product. In the installation, its tracks hold the curated artwork arrangement while the web layer maps tactile position to musical focus. The current bridge sends note messages in Region Chords mode and a prototype CC11 expression map in Full Composition mode. Track-level expression must be validated on the physical unit before the demo mapping is frozen.
 
-## What is real
+Browser audio is a deterministic rehearsal fallback so the complete interaction can be developed without hardware. It does not claim to reproduce CHORDCAT's internal sound library.
 
-- MediaPipe face tracking derives horizontal yaw and vertical pitch locally; frames are neither recorded nor uploaded.
-- Personal four-direction calibration, smoothing, dominant-axis selection, gesture hold, return-to-center confirmation, face-loss recovery, and cooldown prevent repeated frame-level triggers.
-- A section-based arrangement engine performs distinct drum patterns, bass behavior, pad harmony, and melodic motifs for each part of the performance.
-- The participant controls musical form and expression without being asked to select chords or notes.
-- Accepted actions are quantized to the next beat.
-- Web MIDI targets Chordcat when available; Tone.js remains the software-audio fallback.
-- Section changes are quantized and keep the music flowing while the performance state changes.
+## Project structure
 
-## Boundaries
+- `src/artwork/` — artwork catalogue, semantic regions, polygons, score metadata
+- `src/interaction/` — region lookup and dwell/hysteresis state machine
+- `src/audio/` — continuous score, region voicing, MIDI output, narration
+- `src/components/ArtworkCanvas.tsx` — natural-ratio image rendering and clean pixel sampling
+- `src/components/DebugPanel.tsx` — facilitator and hardware bridge console
 
-This is an early feasibility prototype, not a medical device or disability-user validation. Webcam performance varies with lighting, posture, glasses, and movement pattern. The interaction requires future co-design and testing with people who use alternative access methods. Blink remains future work until the four-direction head path is reliable.
+## Product boundary
+
+Music communicates atmosphere, emphasis, contrast, and relationships; it does not replace semantic description. Meaning comes from the tactile relief and concise narration. This is a hackathon prototype, not disability-user validation, and the final interaction should be co-designed and tested with blind and low-vision visitors.

@@ -3,7 +3,18 @@
 > **AI Music Hackathon 2026** — Berghotel Rudolfshütte  
 > **Challenge 6:** Multimodal & Accessible Tactile Music Installation  
 > **Donanım Altyapısı:** AlphaTheta CHORDCAT (8-Track Groovebox) + Web Tabanlı Dokunsal Arayüz  
-> **Doküman Sürümü:** 2.0 (Teknik Derinlik & Sistem Mimarisi)  
+> **Doküman Sürümü:** 2.1 (Merkez Tabanlı Sürekli Miks)  
+
+---
+
+## Güncel Prototip Kararı — İki Müzikal Deneyim
+
+Navbar, aynı eser verisini kullanan iki yaklaşımı karşılaştırır:
+
+1. **Region Chords:** Görünmeyen semantik polygonlar dwell ve anlatım için korunur; aktif alan kendi akorunu veya motifini icra eder.
+2. **Full Composition:** Polygonlar ses seviyesi sınırı değildir. Her bölgenin alan-ağırlıklı bir müzikal merkezi vardır ve parmağın bütün merkezlere uzaklığı tüm stem seviyelerini aynı anda sürekli biçimde belirler. Stem'ler rollerine göre `%10–18` tabanın altına düşmez, merkezde `%100` olur ve Web Audio gain geçişleri yaklaşık yarım saniyede yumuşar.
+
+Arayüzde polygon dolguları, sınırları ve büyük bölge etiketleri gösterilmez; yalnızca renkli `T1…T8` merkez noktaları ve parmak imleci görünür. Polygonlar yalnızca kısa dwell sonrasında semantik TTS anlatımını seçmek için perde arkasında kalır. CHORDCAT tarafındaki hedef, aynı sürekli seviyeleri ilgili track'lere CC11 expression olarak iletmektir; bu eşleme fiziksel cihazla doğrulanacaktır.
 
 ---
 
