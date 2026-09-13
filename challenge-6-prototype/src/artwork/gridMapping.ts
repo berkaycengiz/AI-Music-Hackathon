@@ -32,12 +32,12 @@ const SCALE_INTERVALS: Record<string, number[]> = {
   'minor-pentatonic': [0, 3, 5, 7, 10],
 };
 
-const FAMILY_TRACK: Record<MotifFamily, number> = {
-  geometry: 5,
-  human: 6,
-  nature: 7,
-  atmosphere: 8,
-};
+/**
+ * Track 2 remains the silent 4x4 controller input. All generated motifs return
+ * to one proven hardware voice so the demo needs only a single CHORDCAT sound
+ * and MIDI-IN setup.
+ */
+export const CHORDCAT_MELODY_TRACK = 6;
 
 const FAMILY_WAVEFORM: Record<MotifFamily, OscillatorType> = {
   geometry: 'square',
@@ -67,11 +67,32 @@ const FAMILY_TIMBRE: Record<MotifFamily, string> = {
   atmosphere: 'Restrained bell or airy pad with generous space',
 };
 
-const BASE_DEGREES: Record<MotifFamily, Array<number | null>> = {
-  atmosphere: [0, null, null, 4, null, null, 2, null],
-  geometry: [0, 4, null, 2, 0, null, 3, 1],
-  human: [0, null, 1, 2, 4, null, 3, 2],
-  nature: [0, 2, 4, 1, 3, 5, 4, 2],
+/**
+ * One recognisable melodic identity per artwork. Values are scale degrees, so
+ * the same theme automatically follows the key and mode declared by the score.
+ * A grid cell transforms this theme instead of inventing an unrelated phrase.
+ */
+const ARTWORK_THEME_DEGREES: Record<string, number[]> = {
+  'creation-of-adam': [0, 2, 4, 3, 5, 4, 2, 1],
+  'the-scream': [0, 5, 1, 6, 2, 4, 1, 0],
+  'the-kiss': [0, 2, 4, 5, 4, 2, 3, 1],
+  'wanderer-fog': [0, 2, 4, 3, 1, 3, 2, 0],
+  'woman-with-parasol': [0, 2, 4, 6, 5, 4, 2, 3],
+  'raft-of-medusa': [0, 1, 4, 2, 5, 3, 1, 0],
+  'arnolfini-portrait': [0, 2, 4, 3, 2, 4, 2, 0],
+  'landscape-fields': [0, 2, 4, 3, 5, 4, 2, 1],
+  'water-lily-pond': [0, 2, 4, 3, 1, 2, 0, 1],
+  'geometric-demo': [0, 4, 2, 5, 1, 3, 2, 0],
+};
+
+const DEFAULT_ARTWORK_THEME = [0, 2, 4, 3, 1, 3, 2, 0];
+
+/** Families retain their own rhythmic articulation while sharing the theme. */
+const FAMILY_RHYTHM_MASK: Record<MotifFamily, boolean[]> = {
+  atmosphere: [true, false, false, true, false, false, true, false],
+  geometry: [true, true, false, true, true, false, true, true],
+  human: [true, false, true, true, true, false, true, true],
+  nature: [true, true, true, true, true, true, true, true],
 };
 
 const MOVEMENT_CONTOURS: Record<VisualMovement, number[]> = {
@@ -92,15 +113,6 @@ function clamp01(value: number): number {
   return Math.max(0, Math.min(1, value));
 }
 
-function hashSeed(value: string): number {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
 function buildScaleNotes(artwork: ArtworkDefinition): number[] {
   const root = ROOT_PITCH_CLASS[artwork.keyRoot] ?? 0;
   const intervals = SCALE_INTERVALS[artwork.scale.toLowerCase()] || SCALE_INTERVALS.major;
@@ -117,21 +129,34 @@ function nearestIndex(notes: number[], target: number): number {
   );
 }
 
-function makeDegreePattern(analysis: GridCellAnalysis, family: MotifFamily): Array<number | null> {
-  const base = [...BASE_DEGREES[family]];
+function makeDegreePattern(
+  artwork: ArtworkDefinition,
+  analysis: GridCellAnalysis,
+  family: MotifFamily,
+): Array<number | null> {
+  const theme = ARTWORK_THEME_DEGREES[artwork.id] || DEFAULT_ARTWORK_THEME;
+  const rhythmMask = FAMILY_RHYTHM_MASK[family];
   const contour = MOVEMENT_CONTOURS[analysis.movement];
-  const seed = hashSeed(`${analysis.cell}:${analysis.label}`);
-  const rotation = seed % base.length;
-  const rotated = base.map((_, index) => base[(index + rotation) % base.length]);
+  const column = (analysis.cell - 1) % ARTWORK_GRID_SIZE;
+  const row = Math.floor((analysis.cell - 1) / ARTWORK_GRID_SIZE);
+  // Neighbours move through at most one phase step at a time, keeping the
+  // source melody recognisable while still responding to grid position.
+  const phase = Math.floor((row + column) / 3);
+  const rotated = theme.map((_, index) => theme[(index + phase) % theme.length]);
+  const density = clamp01((analysis.energy + analysis.visualMetrics.edgeDensity * 3) / 2);
 
   return rotated.map((degree, index) => {
-    const density = clamp01((analysis.energy + analysis.visualMetrics.edgeDensity * 3) / 2);
-    if (degree === null && density > 0.7 && (seed + index) % 3 === 0) {
-      return contour[index] % 5;
-    }
-    if (degree !== null && density < 0.28 && index % 2 === 1) return null;
-    if (degree === null) return null;
-    return Math.round((degree + contour[index]) / 2);
+    let shouldPlay = rhythmMask[index];
+    // Dense visual areas reveal more of the common melody; sparse areas leave
+    // air around it. This changes rhythm without replacing its pitch identity.
+    if (!shouldPlay && density > 0.72 && (index + analysis.cell) % 3 === 0) shouldPlay = true;
+    if (shouldPlay && density < 0.28 && index % 2 === 1) shouldPlay = false;
+    if (!shouldPlay) return null;
+
+    // Movement bends the shared theme by only a couple of scale degrees. Large
+    // register changes remain driven by brightness in patternToMidi().
+    const contourDelta = Math.max(-2, Math.min(2, Math.round((contour[index] - contour[0]) / 4)));
+    return degree + contourDelta;
   });
 }
 
@@ -143,18 +168,20 @@ function patternToMidi(
 ): Array<number | null> {
   const scaleNotes = buildScaleNotes(artwork);
   const familyCenter: Record<MotifFamily, number> = {
-    geometry: 52,
-    human: 64,
+    geometry: 57,
+    human: 62,
     nature: 60,
-    atmosphere: 67,
+    atmosphere: 65,
   };
   const brightnessOffset = Math.round((analysis.visualMetrics.brightness - 0.5) * 16);
   const baseIndex = nearestIndex(scaleNotes, familyCenter[family] + brightnessOffset);
-  const seedOffset = hashSeed(`${artwork.id}:${analysis.cell}`) % 3;
+  const column = (analysis.cell - 1) % ARTWORK_GRID_SIZE;
+  const row = Math.floor((analysis.cell - 1) / ARTWORK_GRID_SIZE);
+  const neighbourOffset = Math.round(((row + column) / 6 - 0.5) * 2);
 
   return degrees.map((degree) => {
     if (degree === null) return null;
-    const index = Math.max(0, Math.min(scaleNotes.length - 1, baseIndex + degree + seedOffset));
+    const index = Math.max(0, Math.min(scaleNotes.length - 1, baseIndex + degree + neighbourOffset));
     return scaleNotes[index];
   });
 }
@@ -184,7 +211,7 @@ function translationFor(analysis: GridCellAnalysis, family: MotifFamily): string
 
 function createSemanticMotif(artwork: ArtworkDefinition, analysis: GridCellAnalysis): SemanticMotif {
   const family = dominantFamily(analysis.familyWeights);
-  const degrees = makeDegreePattern(analysis, family);
+  const degrees = makeDegreePattern(artwork, analysis, family);
   const steps = patternToMidi(artwork, analysis, family, degrees);
   const stepBeats = analysis.energy > 0.78 ? 0.25 : analysis.energy < 0.28 ? 1 : 0.5;
   const baseGate: Record<MotifFamily, number> = {
@@ -289,7 +316,7 @@ export function createGridRegions(artwork: ArtworkDefinition): ArtworkRegion[] {
       spokenLabel: `Cell ${cell}. ${analysis.interpretation}`,
       polygon: gridCellPolygon(cell),
       priority: 1,
-      chordcatTrack: FAMILY_TRACK[family],
+      chordcatTrack: CHORDCAT_MELODY_TRACK,
       chordName: `${artwork.keyRoot} ${family} · ${analysis.movement}`,
       midiNotes: midiNotes.length ? midiNotes : variedNotes(source.midiNotes, index % ARTWORK_GRID_SIZE),
       musicalRole: FAMILY_ROLE[family],
