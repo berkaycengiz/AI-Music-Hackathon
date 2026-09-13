@@ -95,7 +95,7 @@ The user-facing object is the artwork, not CHORDCAT. CHORDCAT is an enabling ins
 - Sixteen unrelated melodies generated directly from sixteen average RGB values
 - Making the visitor feel as if they are learning or remotely controlling CHORDCAT
 
-The old camera and Tone.js dependencies have been removed from the current package.
+The old camera dependencies remain removed. Tone.js has been reintroduced only as the shared musical transport for quantized motif scheduling; CHORDCAT remains the target sound engine.
 
 ---
 
@@ -112,14 +112,15 @@ The code now implements the 4×4 interaction as the default experience while pre
 - Web Audio API
 - Web MIDI API
 - Web Speech API
+- Tone.js Transport
 
-There is no active MediaPipe or Tone.js dependency.
+There is no active MediaPipe dependency. Tone.js does not perform image analysis and is not the final hardware timbre source.
 
 ### 4.2 Current experience modes
 
 #### 4×4 Melodies (default)
 
-The artwork is visibly divided into four columns and four rows. Mouse movement and the sixteen calibrated CHORDCAT keys address the same cells in reading order. Each cell is an independent interaction target with its own highlight and dwell lifecycle. *The Kiss* now has a complete hand-authored sixteen-cell semantic score with four motif families: atmosphere, geometry, human, and nature. The facilitator panel exposes the visual observation and its musical translation. Other artworks temporarily borrow the nearest semantic theme and apply one of four voicing/gesture variations.
+The artwork is visibly divided into four columns and four rows. Mouse movement and the sixteen calibrated CHORDCAT keys address the same cells in reading order. Each cell is an independent interaction target with its own highlight and dwell lifecycle. All nine museum artworks have complete hand-authored sixteen-cell semantic analyses with four motif families: atmosphere, geometry, human, and nature. The facilitator panel exposes the visual observation and its musical translation. The geometric development demo retains the older fallback mapping.
 
 #### Full Composition
 
@@ -444,13 +445,13 @@ One workable eight-track arrangement is:
 | Track | Role |
 |---:|---|
 | 1 | Drums / rhythmic foundation |
-| 2 | Bass |
-| 3 | Harmony / pad |
-| 4 | Primary cell melody |
-| 5 | Counter-melody or arpeggio |
-| 6 | Texture / atmosphere |
-| 7 | Transitional accents |
-| 8 | Optional second texture, percussion, or reserved integration track |
+| 2 | Silent sixteen-key controller; input only |
+| 3 | Bass |
+| 4 | Harmony / pad |
+| 5 | Geometry pluck / ostinato |
+| 6 | Human / legato lead |
+| 7 | Nature / organic arpeggio |
+| 8 | Atmosphere / shimmer |
 
 The sixteen cells should normally select motif/pattern variations inside this shared arrangement, not consume sixteen simultaneous tracks.
 
@@ -468,7 +469,7 @@ Strategy A is the safer hackathon fallback. Strategy B may produce a more authen
 
 ### 9.4 Browser sound
 
-The existing Web Audio engine is a rehearsal and interaction fallback. Its oscillator-based arrangement demonstrates timing and mixing behavior but is not the target sound quality. Connecting CHORDCAT does not automatically improve the composition: the project still needs intentionally selected presets, effects, patterns, and motif writing.
+The Web Audio engine is a rehearsal and interaction fallback. Its oscillator-based arrangement demonstrates timing and mixing behavior but is not the target sound quality. When a MIDI output is present, browser synthesis is suppressed automatically so it cannot double the CHORDCAT audio. Tone.js keeps the motif clock, while timestamped Web MIDI messages perform T5–T8. The saved CHORDCAT project still needs intentionally selected presets, effects, and backing patterns.
 
 ---
 
@@ -612,7 +613,7 @@ The repository currently contains nine artwork fixtures plus one abstract demo:
 9. Pond & Meadow Landscape
 10. Geometric Sonic Canvas — development demo
 
-Existing JSON fixtures contain semantic polygons, chord voicings, track numbers, roles, dynamics, narration, key, scale, tempo, and mood. *The Kiss* additionally has a hardcoded sixteen-cell semantic motif layer in `src/artwork/gridMapping.ts`; it is the reference schema and auditory test case for eventual vision-AI output. The remaining artworks do not yet contain final sixteen-cell definitions.
+Existing JSON fixtures contain semantic polygons, chord voicings, track numbers, roles, dynamics, narration, key, scale, tempo, and mood. Nine additional files under `src/artwork/grid-analyses/` contain 144 curated cell analyses. `src/artwork/gridMapping.ts` deterministically converts those analyses into scale-constrained mini-loops and routes their dominant families to T5–T8. These files are the reference schema and auditory test set for eventual vision-AI output.
 
 For the hackathon, quality on three hero artworks is more important than shallow musical content across every available image.
 
@@ -630,6 +631,9 @@ challenge-6-prototype/
 ├─ src/
 │  ├─ artwork/
 │  │  ├─ artworkTypes.ts         Current artwork/region/mix types
+│  │  ├─ gridAnalysisTypes.ts    Curated visual-analysis schema
+│  │  ├─ gridMapping.ts          Deterministic mini-loop generator
+│  │  ├─ grid-analyses/          Nine artworks × sixteen cells
 │  │  ├─ regionLookup.ts          Polygon hit testing and centroids
 │  │  ├─ pixelAnalysis.ts         Clean source-image color metrics
 │  │  └─ fixtures/                Curated artwork JSON files
@@ -675,7 +679,7 @@ The latest dual-mode prototype passed TypeScript checks and a Vite production bu
 - start/stop behavior,
 - and a clean browser console.
 
-The 4×4 controller model is implemented in the UI. Mouse and calibrated CHORDCAT input share the same row-major cell mapping; *The Kiss* is the first semantically scored artwork.
+The 4×4 controller model is implemented in the UI. Mouse and calibrated CHORDCAT input share the same row-major cell mapping; all nine museum artworks have semantically scored grids.
 
 ---
 

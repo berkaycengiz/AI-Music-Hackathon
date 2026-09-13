@@ -34,6 +34,8 @@ export interface SemanticMotif {
   stepBeats: number;
   /** Fraction of a step for which each note is held. Values above 1 create legato. */
   gate: number;
+  /** MIDI velocity derived from the cell's visual energy and importance. */
+  velocity: number;
   waveform: OscillatorType;
 }
 

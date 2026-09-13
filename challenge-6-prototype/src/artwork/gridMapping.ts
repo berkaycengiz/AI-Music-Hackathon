@@ -125,13 +125,18 @@ function makeDegreePattern(analysis: GridCellAnalysis, family: MotifFamily): Arr
   const rotated = base.map((_, index) => base[(index + rotation) % base.length]);
 
   return rotated.map((degree, index) => {
-    const density = clamp01((analysis.energy + analysis.visualMetrics.edgeDensity * 3) / 2);
+    const density = clamp01(
+      analysis.energy * 0.55
+      + analysis.importance * 0.2
+      + analysis.visualMetrics.edgeDensity * 1.8,
+    );
     if (degree === null && density > 0.7 && (seed + index) % 3 === 0) {
       return contour[index] % 5;
     }
     if (degree !== null && density < 0.28 && index % 2 === 1) return null;
     if (degree === null) return null;
-    return Math.round((degree + contour[index]) / 2);
+    const contrastExpansion = analysis.visualMetrics.contrast > 0.22 && index % 3 === 1 ? 1 : 0;
+    return Math.round((degree + contour[index]) / 2) + contrastExpansion;
   });
 }
 
@@ -142,6 +147,14 @@ function patternToMidi(
   degrees: Array<number | null>,
 ): Array<number | null> {
   const scaleNotes = buildScaleNotes(artwork);
+  const rootPitchClass = ROOT_PITCH_CLASS[artwork.keyRoot] ?? 0;
+  const minorLike = ['minor', 'dorian', 'phrygian', 'minor-pentatonic']
+    .includes(artwork.scale.toLowerCase());
+  const stablePitchClasses = new Set([
+    rootPitchClass,
+    (rootPitchClass + (minorLike ? 3 : 4)) % 12,
+    (rootPitchClass + 7) % 12,
+  ]);
   const familyCenter: Record<MotifFamily, number> = {
     geometry: 52,
     human: 64,
@@ -151,11 +164,23 @@ function patternToMidi(
   const brightnessOffset = Math.round((analysis.visualMetrics.brightness - 0.5) * 16);
   const baseIndex = nearestIndex(scaleNotes, familyCenter[family] + brightnessOffset);
   const seedOffset = hashSeed(`${artwork.id}:${analysis.cell}`) % 3;
+  const soundingSteps = degrees
+    .map((degree, index) => degree === null ? -1 : index)
+    .filter((index) => index >= 0);
+  const finalSoundingStep = soundingSteps.length
+    ? soundingSteps[soundingSteps.length - 1]
+    : -1;
 
-  return degrees.map((degree) => {
+  return degrees.map((degree, stepIndex) => {
     if (degree === null) return null;
     const index = Math.max(0, Math.min(scaleNotes.length - 1, baseIndex + degree + seedOffset));
-    return scaleNotes[index];
+    const candidate = scaleNotes[index];
+    const shouldAnchor = stepIndex === 0 || stepIndex === finalSoundingStep || stepIndex % 4 === 0;
+    if (!shouldAnchor) return candidate;
+    return scaleNotes.reduce((closest, note) => {
+      if (!stablePitchClasses.has(note % 12)) return closest;
+      return Math.abs(note - candidate) < Math.abs(closest - candidate) ? note : closest;
+    }, scaleNotes.find((note) => stablePitchClasses.has(note % 12)) ?? candidate);
   });
 }
 
@@ -193,6 +218,14 @@ function createSemanticMotif(artwork: ArtworkDefinition, analysis: GridCellAnaly
     human: 1.35,
     nature: 0.78,
   };
+  const velocity = Math.round(Math.max(48, Math.min(
+    112,
+    48
+      + analysis.energy * 24
+      + analysis.importance * 24
+      + analysis.visualMetrics.saturation * 12,
+  )));
+  const warmthLegato = (analysis.visualMetrics.warmth - 0.5) * 0.18;
 
   return {
     family,
@@ -200,7 +233,8 @@ function createSemanticMotif(artwork: ArtworkDefinition, analysis: GridCellAnaly
     musicalTranslation: translationFor(analysis, family),
     steps,
     stepBeats,
-    gate: Math.max(0.42, baseGate[family] - analysis.energy * 0.12),
+    gate: Math.max(0.42, baseGate[family] - analysis.energy * 0.12 + warmthLegato),
+    velocity,
     waveform: FAMILY_WAVEFORM[family],
   };
 }
