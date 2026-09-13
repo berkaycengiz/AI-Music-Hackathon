@@ -71,6 +71,7 @@ export class ObjectSoundEngine {
   private focusRegionId: string | null = null;
 
   private mode: ExperienceMode = 'region-chords';
+  private performanceTempo = 76;
   private initialized = false;
   private currentCutoff = 2200;
 
@@ -203,6 +204,7 @@ export class ObjectSoundEngine {
   startMode(mode: ExperienceMode, artwork: ArtworkDefinition): void {
     this.stopAll();
     this.mode = mode;
+    this.performanceTempo = artwork.tempo;
     if (mode === 'full-composition') this.startComposition(artwork);
   }
 
@@ -216,7 +218,7 @@ export class ObjectSoundEngine {
     if (!this.ctx || !this.masterGain) return;
     this.stopRegionSound(region.id, 80);
     const notes = region.midiNotes.length ? region.midiNotes : [60, 64, 67, 71];
-    this.sendMidiChord(region.id, region.chordcatTrack, notes, 95);
+    if (!region.semanticMotif) this.sendMidiChord(region.id, region.chordcatTrack, notes, 95);
     const voice = this.createPolyphonicChordVoice(region, notes);
     this.activeRegionVoices.set(region.id, voice);
   }
@@ -517,7 +519,40 @@ export class ObjectSoundEngine {
     voiceGain.connect(this.masterGain!);
 
     const oscillators: OscillatorNode[] = [];
-    if (region.dynamicBehavior === 'arpeggio' || region.dynamicBehavior === 'sparkle') {
+    if (region.semanticMotif) {
+      let step = 0;
+      const motif = region.semanticMotif;
+      const stepMs = (60_000 / this.performanceTempo) * motif.stepBeats;
+      const playStep = () => {
+        const note = motif.steps[step % motif.steps.length];
+        step += 1;
+        if (note === null) return;
+
+        const durationSeconds = Math.max(0.08, (stepMs * motif.gate) / 1000);
+        const oscillator = ctx.createOscillator();
+        const envelope = ctx.createGain();
+        oscillator.type = motif.waveform;
+        oscillator.frequency.value = midiToFreq(note);
+        envelope.gain.setValueAtTime(0.0001, ctx.currentTime);
+        envelope.gain.exponentialRampToValueAtTime(0.32, ctx.currentTime + 0.025);
+        envelope.gain.setValueAtTime(0.24, ctx.currentTime + Math.max(0.04, durationSeconds - 0.1));
+        envelope.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSeconds);
+        oscillator.connect(envelope);
+        envelope.connect(voiceGain);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + durationSeconds + 0.02);
+        oscillator.onended = () => {
+          oscillator.disconnect();
+          envelope.disconnect();
+        };
+        this.sendMidiPulse(region.chordcatTrack, note, 96, durationSeconds * 1000);
+      };
+      playStep();
+      const timer = window.setInterval(() => {
+        if (this.activeRegionVoices.has(region.id)) playStep();
+      }, stepMs);
+      this.arpeggioTimers.set(region.id, timer);
+    } else if (region.dynamicBehavior === 'arpeggio' || region.dynamicBehavior === 'sparkle') {
       let step = 0;
       const playStep = () => {
         const octave = region.dynamicBehavior === 'sparkle' ? 12 : 0;
@@ -577,6 +612,17 @@ export class ObjectSoundEngine {
       this.activeMidiChords.set(regionId, { channel, notes: [...notes] });
     } catch (error) {
       console.warn('MIDI chord send failed:', error);
+    }
+  }
+
+  private sendMidiPulse(trackNumber: number, note: number, velocity: number, durationMs: number): void {
+    if (!this.midiOutput) return;
+    const channel = Math.max(0, Math.min(7, trackNumber - 1));
+    try {
+      this.midiOutput.send([0x90 + channel, note, velocity]);
+      this.midiOutput.send([0x80 + channel, note, 0], window.performance.now() + durationMs);
+    } catch {
+      // The browser voice remains the reliable prototype fallback.
     }
   }
 

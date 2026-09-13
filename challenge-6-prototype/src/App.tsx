@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type {
   AppState,
   ExperienceMode,
@@ -14,11 +14,17 @@ import { SpeechNarration } from './audio/speechNarration';
 import { ArtworkCanvas } from './components/ArtworkCanvas';
 import { DebugPanel } from './components/DebugPanel';
 import { CURATED_ARTWORKS } from './artwork/fixtures';
+import {
+  ARTWORK_GRID_CELL_COUNT,
+  createGridRegions,
+  gridCellCenter,
+  pointToGridCell,
+} from './artwork/gridMapping';
 
 const MODE_COPY: Record<ExperienceMode, { label: string; short: string }> = {
   'region-chords': {
-    label: 'Region Chords',
-    short: 'Each area performs its own harmonic gesture.',
+    label: '4×4 Melodies',
+    short: 'Sixteen artwork cells perform spatial variations of its musical themes.',
   },
   'full-composition': {
     label: 'Full Composition',
@@ -28,8 +34,9 @@ const MODE_COPY: Record<ExperienceMode, { label: string; short: string }> = {
 
 export default function App() {
   const artworks = CURATED_ARTWORKS;
-  const [selectedArtworkKey, setSelectedArtworkKey] = useState('creation-of-adam');
-  const currentArtwork = artworks[selectedArtworkKey] || CURATED_ARTWORKS['creation-of-adam'];
+  const [selectedArtworkKey, setSelectedArtworkKey] = useState('the-kiss');
+  const currentArtwork = artworks[selectedArtworkKey] || CURATED_ARTWORKS['the-kiss'];
+  const gridRegions = useMemo(() => createGridRegions(currentArtwork), [currentArtwork]);
 
   const [appState, setAppState] = useState<AppState>('idle');
   const [experienceMode, setExperienceMode] = useState<ExperienceMode>('region-chords');
@@ -42,8 +49,18 @@ export default function App() {
   const [dwellMs, setDwellMs] = useState(0);
   const [playingSounds, setPlayingSounds] = useState<string[]>([]);
   const [trackMix, setTrackMix] = useState<TrackMixState[]>([]);
+  const selectedGridCell = experienceMode === 'region-chords' && mousePos
+    ? pointToGridCell(mousePos)
+    : null;
+  const interactionRegions = experienceMode === 'region-chords'
+    ? gridRegions
+    : currentArtwork.regions;
+  const interactionArtwork = useMemo(
+    () => ({ ...currentArtwork, regions: experienceMode === 'region-chords' ? gridRegions : currentArtwork.regions }),
+    [currentArtwork, experienceMode, gridRegions],
+  );
 
-  const [isNarrationEnabled, setIsNarrationEnabled] = useState(true);
+  const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [, setMidiVersion] = useState(0);
 
@@ -141,12 +158,7 @@ export default function App() {
 
   const handleChordcatCell = useCallback((cell: number) => {
     if (appState !== 'exploring') return;
-    const index = cell - 1;
-    const pos = {
-      x: ((index % 4) + 0.5) / 4,
-      y: (Math.floor(index / 4) + 0.5) / 4,
-    };
-    handlePointerInput(pos, null);
+    handlePointerInput(gridCellCenter(cell), null);
   }, [appState, handlePointerInput]);
 
   useEffect(() => {
@@ -164,12 +176,14 @@ export default function App() {
       const now = performance.now();
       const { pos } = latestInput.current;
       const hitRegion = pos
-        ? findRegion(currentArtwork.regions, pos, stateMachine.current.activeRegionId)
+        ? experienceMode === 'region-chords'
+          ? gridRegions[pointToGridCell(pos) - 1] ?? null
+          : findRegion(currentArtwork.regions, pos, stateMachine.current.activeRegionId)
         : null;
       const events = stateMachine.current.update(hitRegion?.id ?? null, now);
 
       for (const event of events) {
-        const region = currentArtwork.regions.find((item) => item.id === event.regionId);
+        const region = interactionRegions.find((item) => item.id === event.regionId);
         if (!region) continue;
 
         if (event.type === 'enter') {
@@ -189,18 +203,18 @@ export default function App() {
       setPlayingSounds(
         experienceMode === 'full-composition'
           ? mix.filter((track) => track.state === 'focus').map((track) => track.label)
-          : currentArtwork.regions
+          : interactionRegions
               .filter((region) => soundEngine.current.isPlaying(region.id))
               .map((region) => region.label),
       );
     }, 33);
 
     return () => window.clearInterval(timer);
-  }, [appState, currentArtwork, experienceMode, speakRegion]);
+  }, [appState, currentArtwork, experienceMode, gridRegions, interactionRegions, speakRegion]);
 
   const handleTriggerRegion = useCallback((regionId: string) => {
     if (!soundEngine.current.isInitialized) return;
-    const region = currentArtwork.regions.find((item) => item.id === regionId);
+    const region = interactionRegions.find((item) => item.id === regionId);
     if (!region) return;
 
     if (experienceMode === 'full-composition') {
@@ -218,7 +232,7 @@ export default function App() {
       soundEngine.current.startRegionSound(region);
     }
     setTrackMix(soundEngine.current.getTrackMixSnapshot());
-  }, [currentArtwork, experienceMode]);
+  }, [experienceMode, interactionRegions]);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -303,7 +317,10 @@ export default function App() {
               </p>
               <p className="start-desc">{currentArtwork.moodDescription}</p>
               <div className="start-meta-grid">
-                <span><strong>{currentArtwork.regions.length}</strong> regions</span>
+                <span>
+                  <strong>{experienceMode === 'region-chords' ? ARTWORK_GRID_CELL_COUNT : currentArtwork.regions.length}</strong>
+                  {experienceMode === 'region-chords' ? ' cells' : ' regions'}
+                </span>
                 <span><strong>{currentArtwork.keyRoot} {currentArtwork.scale}</strong> score</span>
                 <span><strong>{currentArtwork.tempo}</strong> BPM</span>
               </div>
@@ -321,6 +338,7 @@ export default function App() {
             activeRegionId={activeRegionId}
             candidateRegionId={candidateRegionId}
             mousePos={mousePos}
+            selectedGridCell={selectedGridCell}
             onMouseMove={handlePointerInput}
             disabled={appState !== 'exploring'}
           />
@@ -328,10 +346,11 @@ export default function App() {
 
         <aside className="debug-area">
           <DebugPanel
-            artwork={currentArtwork}
+            artwork={interactionArtwork}
             mode={experienceMode}
             trackMix={trackMix}
             mousePos={mousePos}
+            selectedGridCell={selectedGridCell}
             activeRegionId={activeRegionId}
             lifecycle={lifecycle}
             dwellMs={dwellMs}

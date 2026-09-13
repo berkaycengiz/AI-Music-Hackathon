@@ -101,7 +101,7 @@ The old camera and Tone.js dependencies have been removed from the current packa
 
 ## 4. Current Working Web Prototype
 
-The code currently implements a polished transitional prototype. It predates the final 4×4 input decision but provides reusable UI, artwork, audio, MIDI-output, narration, and safety foundations.
+The code now implements the 4×4 interaction as the default experience while preserving the earlier continuous center-mix prototype as the second comparison mode. It also provides reusable UI, artwork, audio, MIDI input/output, narration, calibration, and safety foundations.
 
 ### 4.1 Technology
 
@@ -117,9 +117,9 @@ There is no active MediaPipe or Tone.js dependency.
 
 ### 4.2 Current experience modes
 
-#### Region Chords
+#### 4×4 Melodies (default)
 
-Invisible curated polygons define semantic regions. After a short dwell, the active region performs its curated chord or motif. This mode provides explicit cause and effect and remains useful as a comparison prototype.
+The artwork is visibly divided into four columns and four rows. Mouse movement and the sixteen calibrated CHORDCAT keys address the same cells in reading order. Each cell is an independent interaction target with its own highlight and dwell lifecycle. *The Kiss* now has a complete hand-authored sixteen-cell semantic score with four motif families: atmosphere, geometry, human, and nature. The facilitator panel exposes the visual observation and its musical translation. Other artworks temporarily borrow the nearest semantic theme and apply one of four voicing/gesture variations.
 
 #### Full Composition
 
@@ -143,11 +143,12 @@ Role-specific minimum levels are:
 
 Audio gains use approximately half-second perceptual smoothing. Multiple nearby stems can blend, but a global headroom calculation reduces clipping risk. Only colored musical center points are drawn; semantic polygons and large labels are hidden.
 
-This center-based mode is transitional. The next implementation should adapt the same continuous-audio principles to the fixed 4×4 hardware grid.
+This center-based mode remains intentionally available as the second A/B comparison experience.
 
-### 4.3 Semantic interaction
+### 4.3 Interaction timing
 
-- Polygon boundaries remain available behind the artwork for narration.
+- The default mode uses exact 4×4 cell boundaries.
+- Full Composition retains semantic centers and polygons.
 - Entry dwell: 140 ms
 - Exit dwell: 200 ms
 - Per-region retrigger cooldown: 400 ms
@@ -296,10 +297,7 @@ All sixteen signatures are unique in the captured configuration.
 
 These signatures are musical output from the currently loaded CHORDCAT project, key, scale, and chord set—not permanent hardware key IDs. The reconnect test proved that even without intentionally changing the bank, every signature can move by one shared transpose value.
 
-The implemented demo strategy therefore has two layers:
-
-1. **Quick calibration:** the facilitator presses physical key 1. If its voicing equals the verified key-1 signature under one uniform transpose, the application shifts the complete sixteen-key signature bank automatically.
-2. **Full fallback:** if key 1 has a different voicing, that press becomes the first sample of a guided 1→16 calibration. The facilitator records the remaining fifteen keys in reading order.
+The implemented demo strategy intentionally avoids guessing the active transpose or voicing. The facilitator runs one guided 1→16 calibration in reading order. The completed mapping is saved in browser `localStorage` and restored automatically on later page loads and CHORDCAT reconnects. If the active project, key, transpose, or chord set changes, the facilitator can run **Recalibrate 16 keys** to overwrite the saved profile.
 
 Unknown runtime signatures never trigger the nearest cell. They are rejected with a recalibration message. A dedicated locked CHORDCAT demo project is still desirable, and any additional stable configuration discovered immediately before judging can be hardcoded as another verified profile.
 
@@ -614,7 +612,7 @@ The repository currently contains nine artwork fixtures plus one abstract demo:
 9. Pond & Meadow Landscape
 10. Geometric Sonic Canvas — development demo
 
-Existing JSON fixtures contain semantic polygons, chord voicings, track numbers, roles, dynamics, narration, key, scale, tempo, and mood. They are useful source material but do not yet contain final sixteen-cell color and motif definitions.
+Existing JSON fixtures contain semantic polygons, chord voicings, track numbers, roles, dynamics, narration, key, scale, tempo, and mood. *The Kiss* additionally has a hardcoded sixteen-cell semantic motif layer in `src/artwork/gridMapping.ts`; it is the reference schema and auditory test case for eventual vision-AI output. The remaining artworks do not yet contain final sixteen-cell definitions.
 
 For the hackathon, quality on three hero artworks is more important than shallow musical content across every available image.
 
@@ -666,7 +664,7 @@ Production verification:
 npm run build
 ```
 
-The latest center-based prototype passed TypeScript checks and a Vite production build. It was manually verified in the browser for:
+The latest dual-mode prototype passed TypeScript checks and a Vite production build. It was manually verified in the browser for:
 
 - both experience modes,
 - artwork switching,
@@ -677,7 +675,7 @@ The latest center-based prototype passed TypeScript checks and a Vite production
 - start/stop behavior,
 - and a clean browser console.
 
-The new 4×4 controller model described in this document is the next implementation step and is not yet present in the UI.
+The 4×4 controller model is implemented in the UI. Mouse and calibrated CHORDCAT input share the same row-major cell mapping; *The Kiss* is the first semantically scored artwork.
 
 ---
 
@@ -721,4 +719,4 @@ The new 4×4 controller model described in this document is the next implementat
 
 ## 18. Immediate Next Action
 
-Implement the 4×4 grid and central `selectCell(index, source)` state flow with mouse input first. Then connect the verified chord-signature recognizer to the same function through Web MIDI input. This gives one interaction architecture with two interchangeable input sources and avoids building separate prototype and hardware paths.
+Curate real color profiles and motif families for the sixteen cells of the hero artwork, then replace the current nearest-theme voicing variations with intentional CHORDCAT-ready melodic material. Keep the shared mouse/CHORDCAT cell addressing and retain Full Composition as the second comparison mode.

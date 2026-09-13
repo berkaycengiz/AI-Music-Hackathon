@@ -200,6 +200,40 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--lime); out
 .region-performance-card { display: flex; flex-direction: column; gap: 6px; }
 .region-performance-card strong { color: var(--mint); font-family: Georgia, serif; font-size: 18px; font-weight: 500; }
 .region-performance-card > span { color: var(--ink-2); font-size: 10px; line-height: 1.45; }
+.semantic-mapping {
+  display: grid;
+  gap: 7px;
+  margin: 5px 0 2px;
+  padding: 10px;
+  border: 1px solid rgba(137, 242, 216, 0.14);
+  border-radius: 9px;
+  background: rgba(137, 242, 216, 0.035);
+}
+.semantic-mapping p { margin: 0; color: var(--ink-2); font-size: 10px; line-height: 1.45; }
+.semantic-mapping p b {
+  display: inline-block;
+  width: 42px;
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.motif-family {
+  justify-self: start;
+  padding: 3px 7px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.family-atmosphere { color: #d9b74a; }
+.family-geometry { color: #88b8ff; }
+.family-human { color: #ff9fbd; }
+.family-nature { color: #82d98f; }
 .debug-sound-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
 .sound-pill { padding: 4px 7px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 9px; }
 .sound-pill.active { color: var(--mint); border-color: rgba(111, 229, 205, 0.25); }

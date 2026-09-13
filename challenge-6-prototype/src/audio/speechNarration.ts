@@ -5,7 +5,7 @@
 export class SpeechNarration {
   private synth: SpeechSynthesis | null = null;
   private voice: SpeechSynthesisVoice | null = null;
-  private enabled = true;
+  private enabled = false;
   private isSpeaking = false;
 
   constructor() {

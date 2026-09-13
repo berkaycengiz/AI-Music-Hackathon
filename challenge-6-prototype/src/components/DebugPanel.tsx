@@ -13,6 +13,7 @@ interface Props {
   mode: ExperienceMode;
   trackMix: TrackMixState[];
   mousePos: Point | null;
+  selectedGridCell: number | null;
   activeRegionId: string | null;
   lifecycle: RegionLifecycle;
   dwellMs: number;
@@ -40,6 +41,7 @@ export function DebugPanel({
   mode,
   trackMix,
   mousePos,
+  selectedGridCell,
   activeRegionId,
   lifecycle,
   dwellMs,
@@ -84,7 +86,7 @@ export function DebugPanel({
 
       <section className="debug-section mix-section">
         <div className="section-title-row">
-          <h3>{mode === 'full-composition' ? 'Live stem mix' : 'Region performance'}</h3>
+          <h3>{mode === 'full-composition' ? 'Live stem mix' : 'Grid melody'}</h3>
           <span className="micro-badge">{mode === 'full-composition' ? 'CC11 PROTOTYPE' : 'NOTE MODE'}</span>
         </div>
 
@@ -110,8 +112,17 @@ export function DebugPanel({
           </div>
         ) : (
           <div className="region-performance-card">
-            <strong>{activeRegion?.chordName || 'Waiting for a region'}</strong>
-            <span>{activeRegion?.timbreDescription || 'Move across the artwork to perform its harmonic regions.'}</span>
+            <strong>{activeRegion?.chordName || 'Waiting for a cell'}</strong>
+            <span>{activeRegion?.timbreDescription || 'Move across the 4×4 artwork grid to perform its melodic variations.'}</span>
+            {activeRegion?.semanticMotif && (
+              <div className="semantic-mapping">
+                <span className={`motif-family family-${activeRegion.semanticMotif.family}`}>
+                  {activeRegion.semanticMotif.family}
+                </span>
+                <p><b>Visual</b>{activeRegion.semanticMotif.visualMeaning}</p>
+                <p><b>Music</b>{activeRegion.semanticMotif.musicalTranslation}</p>
+              </div>
+            )}
             <div className="debug-sound-list">
               {playingSounds.length === 0 && <span className="sound-pill">No active voice</span>}
               {playingSounds.map((label) => <span className="sound-pill active" key={label}>{label}</span>)}
@@ -127,9 +138,11 @@ export function DebugPanel({
           <span className="debug-value">
             {mousePos ? `${mousePos.x.toFixed(3)}, ${mousePos.y.toFixed(3)}` : '—'}
           </span>
-          <span className="debug-label">{mode === 'full-composition' ? 'Narration' : 'Region'}</span>
+          <span className="debug-label">{mode === 'full-composition' ? 'Narration' : 'Cell'}</span>
           <span className="debug-value" style={{ color: activeRegion?.color }}>
-            {activeRegion?.label || '—'}
+            {mode === 'region-chords' && selectedGridCell
+              ? `${String(selectedGridCell).padStart(2, '0')} / 16`
+              : activeRegion?.label || '—'}
           </span>
           <span className="debug-label">State</span>
           <span className={`debug-value lifecycle-${lifecycle.toLowerCase()}`}>{lifecycle}</span>

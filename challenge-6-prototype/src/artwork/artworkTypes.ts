@@ -20,6 +20,23 @@ export type MusicalRole = 'bass' | 'harmony' | 'melody' | 'pad' | 'accent' | 'te
 /** Playing dynamic style */
 export type DynamicBehavior = 'sustained-chord' | 'arpeggio' | 'drone' | 'pulse' | 'sparkle';
 
+/** Curated visual idea that gives a grid cell its melodic identity. */
+export type MotifFamily = 'atmosphere' | 'geometry' | 'human' | 'nature';
+
+/** Semantic layer that a vision model can eventually generate. */
+export interface SemanticMotif {
+  family: MotifFamily;
+  visualMeaning: string;
+  musicalTranslation: string;
+  /** Quantized monophonic phrase; null creates a rest. */
+  steps: Array<number | null>;
+  /** Length of one phrase step in quarter-note beats. */
+  stepBeats: number;
+  /** Fraction of a step for which each note is held. Values above 1 create legato. */
+  gate: number;
+  waveform: OscillatorType;
+}
+
 /** A single interactive region on the artwork mapped to a ChordCat track */
 export interface ArtworkRegion {
   id: string;
@@ -43,6 +60,8 @@ export interface ArtworkRegion {
   dynamicBehavior: DynamicBehavior;
   /** Sonic description of the acoustic / synth timbre */
   timbreDescription?: string;
+  /** Optional semantic melody used by the curated 4×4 experience. */
+  semanticMotif?: SemanticMotif;
 
   // ── Envelope & Expression ─────────────────────────────────────
   attackMs: number;

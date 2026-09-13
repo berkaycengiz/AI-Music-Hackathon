@@ -16,16 +16,59 @@ export interface ChordcatInputSnapshot {
 const INPUT_CHANNEL = 1; // Zero-based MIDI channel 2 from the hardware capture.
 const CHORD_WINDOW_MS = 24;
 const DUPLICATE_WINDOW_MS = 180;
+const CALIBRATION_STORAGE_KEY = 'museum-sonic-explorer.chordcat-calibration.v1';
+
+interface StoredCalibration {
+  version: 1;
+  signatures: number[][];
+}
 
 function signatureKey(notes: readonly number[]): string {
   return [...new Set(notes)].sort((a, b) => a - b).join(',');
 }
 
+function isValidSignature(value: unknown): value is number[] {
+  return Array.isArray(value)
+    && value.length >= 4
+    && value.length <= 8
+    && value.every((note) => Number.isInteger(note) && note >= 0 && note <= 127);
+}
+
+function readStoredCalibration(): number[][] | null {
+  try {
+    const raw = window.localStorage.getItem(CALIBRATION_STORAGE_KEY);
+    if (!raw) return null;
+    const stored = JSON.parse(raw) as Partial<StoredCalibration>;
+    if (stored.version !== 1 || !Array.isArray(stored.signatures)) return null;
+    if (stored.signatures.length !== 16 || !stored.signatures.every(isValidSignature)) return null;
+
+    const signatures = stored.signatures.map((notes) => [...new Set(notes)].sort((a, b) => a - b));
+    if (new Set(signatures.map(signatureKey)).size !== 16) return null;
+    return signatures;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredCalibration(signatures: readonly number[][]): boolean {
+  try {
+    const payload: StoredCalibration = {
+      version: 1,
+      signatures: signatures.map((notes) => [...notes]),
+    };
+    window.localStorage.setItem(CALIBRATION_STORAGE_KEY, JSON.stringify(payload));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Turns CHORDCAT chord bursts into stable 1–16 cell selections.
  *
- * Every connection starts with a guided 1–16 calibration so the mapping does
- * not depend on the active CHORDCAT project, key, transpose, or chord voicing.
+ * A completed 1–16 calibration is stored locally and restored on later page
+ * loads or reconnects. The facilitator can overwrite it whenever the active
+ * CHORDCAT project, key, transpose, or chord voicing changes.
  */
 export class ChordcatInput {
   private input: any = null;
@@ -72,6 +115,23 @@ export class ChordcatInput {
     }
 
     input.onmidimessage = (event: any) => this.handleMidiMessage(event);
+    const storedSignatures = readStoredCalibration();
+    if (storedSignatures) {
+      this.customSignatures = storedSignatures;
+      this.signatureMap = new Map(
+        storedSignatures.map((notes, index) => [signatureKey(notes), index + 1]),
+      );
+      this.update({
+        status: 'ready-custom',
+        inputName: input.name || 'CHORDCAT MIDI input',
+        calibrationStep: 16,
+        lastSignature: '',
+        lastCell: null,
+        message: 'Saved sixteen-key mapping loaded. Recalibrate if the controls changed.',
+      });
+      return;
+    }
+
     this.signatureMap.clear();
     this.update({
       status: 'needs-calibration',
@@ -79,7 +139,7 @@ export class ChordcatInput {
       calibrationStep: 0,
       lastSignature: '',
       lastCell: null,
-      message: 'Run quick calibration before the visitor begins.',
+      message: 'Calibrate all sixteen keys before the visitor begins.',
     });
   }
 
@@ -187,11 +247,14 @@ export class ChordcatInput {
     this.signatureMap = new Map(
       this.customSignatures.map((notes, index) => [signatureKey(notes), index + 1]),
     );
+    const saved = writeStoredCalibration(this.customSignatures);
     this.update({
       status: 'ready-custom',
       calibrationStep: 16,
       lastCell: null,
-      message: 'All sixteen keys captured. Custom mapping is ready.',
+      message: saved
+        ? 'All sixteen keys captured and saved in this browser.'
+        : 'Mapping is ready for this session, but browser storage was unavailable.',
     });
   }
 
