@@ -227,6 +227,23 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--lime); out
 .spoken-cue-text { margin-top: 8px; color: #b9b8b2; font-family: Georgia, serif; font-size: 11px; line-height: 1.45; }
 
 .midi-port-select { width: 100%; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink-2); border-radius: 5px; padding: 4px; font-size: 9px; }
+.calibration-card { margin-top: 11px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: #0c0f13; }
+.calibration-card.ready { border-color: rgba(111, 229, 205, 0.25); background: rgba(111, 229, 205, 0.035); }
+.calibration-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.calibration-title-row > div { display: flex; flex-direction: column; gap: 2px; }
+.calibration-title-row strong { color: var(--ink-2); font-size: 11px; }
+.calibration-message { min-height: 28px; margin: 8px 0; color: var(--muted); font-size: 9px; line-height: 1.45; }
+.calibration-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.calibration-grid span { display: grid; place-items: center; aspect-ratio: 1.7; border: 1px solid var(--line); border-radius: 5px; color: #656c77; background: var(--panel-2); font-family: "Cascadia Code", monospace; font-size: 8px; }
+.calibration-grid span.captured { color: var(--mint); border-color: rgba(111, 229, 205, 0.28); background: rgba(111, 229, 205, 0.08); }
+.calibration-grid span.active { color: #10140a; border-color: var(--lime); background: var(--lime); box-shadow: 0 0 10px rgba(236, 255, 122, 0.22); }
+.calibration-meta { margin-top: 8px; display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-family: "Cascadia Code", monospace; font-size: 8px; }
+.calibration-meta span:last-child { max-width: 58%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.calibration-actions { margin-top: 9px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.calibration-actions.single { grid-template-columns: 1fr; }
+.calibration-actions button { border: 1px solid var(--line); border-radius: 6px; padding: 7px 5px; background: var(--panel-2); color: var(--ink-2); font-size: 9px; font-weight: 750; cursor: pointer; }
+.calibration-actions button:first-child { color: var(--lime); border-color: rgba(236, 255, 122, 0.22); }
+.calibration-actions button:disabled { opacity: 0.38; cursor: not-allowed; }
 .track-pads-grid { margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .track-pad-btn { min-width: 0; display: flex; flex-direction: column; gap: 2px; align-items: center; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); border-radius: 6px; padding: 6px 3px; cursor: pointer; }
 .track-pad-btn:hover { background: #1d222a; }

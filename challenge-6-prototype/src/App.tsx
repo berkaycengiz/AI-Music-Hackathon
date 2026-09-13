@@ -139,6 +139,23 @@ export default function App() {
     }
   }, [appState, experienceMode]);
 
+  const handleChordcatCell = useCallback((cell: number) => {
+    if (appState !== 'exploring') return;
+    const index = cell - 1;
+    const pos = {
+      x: ((index % 4) + 0.5) / 4,
+      y: (Math.floor(index / 4) + 0.5) / 4,
+    };
+    handlePointerInput(pos, null);
+  }, [appState, handlePointerInput]);
+
+  useEffect(() => {
+    soundEngine.current.onChordcatCell = handleChordcatCell;
+    return () => {
+      soundEngine.current.onChordcatCell = null;
+    };
+  }, [handleChordcatCell]);
+
   // A stable 30 Hz interaction clock lets dwell finish even when the mouse is still.
   useEffect(() => {
     if (appState !== 'exploring') return;
@@ -325,7 +342,9 @@ export default function App() {
             midiDeviceName={soundEngine.current.midiDeviceName}
             isMidiConnected={soundEngine.current.isMidiConnected}
             midiPorts={soundEngine.current.getMidiPorts()}
+            chordcatInput={soundEngine.current.chordcatInputState}
             onSelectMidiPort={(id) => soundEngine.current.selectMidiPortById(id)}
+            onFullCalibration={() => soundEngine.current.beginFullChordcatCalibration()}
             onTestTrack={(track) => soundEngine.current.testTrack(track)}
             isNarrationEnabled={isNarrationEnabled}
             onToggleNarration={() => setIsNarrationEnabled(narration.current.toggle())}

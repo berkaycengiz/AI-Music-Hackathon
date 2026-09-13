@@ -6,6 +6,8 @@ import type {
   TrackMixState,
 } from '../artwork/artworkTypes';
 import { polygonCenter } from '../artwork/regionLookup';
+import { ChordcatInput } from '../midi/ChordcatInput';
+import type { ChordcatInputSnapshot } from '../midi/ChordcatInput';
 
 function midiToFreq(note: number): number {
   return 440 * Math.pow(2, (note - 69) / 12);
@@ -75,8 +77,15 @@ export class ObjectSoundEngine {
   private midiOutput: any = null;
   private midiAccess: any = null;
   private lastMidiExpression = new Map<number, number>();
+  private chordcatInput = new ChordcatInput();
 
   onMidiStateChange: (() => void) | null = null;
+  onChordcatCell: ((cell: number) => void) | null = null;
+
+  constructor() {
+    this.chordcatInput.onCell = (cell) => this.onChordcatCell?.(cell);
+    this.chordcatInput.onStateChange = () => this.onMidiStateChange?.();
+  }
 
   async initialize(): Promise<void> {
     if (this.initialized) {
@@ -120,6 +129,14 @@ export class ObjectSoundEngine {
     return this.midiOutput?.id || '';
   }
 
+  get chordcatInputState(): ChordcatInputSnapshot {
+    return this.chordcatInput.state;
+  }
+
+  beginFullChordcatCalibration(): void {
+    this.chordcatInput.beginFullCalibration();
+  }
+
   getMidiPorts(): { id: string; name: string }[] {
     if (!this.midiAccess) return [];
     return Array.from(this.midiAccess.outputs.values()).map((output: any) => ({
@@ -144,8 +161,10 @@ export class ObjectSoundEngine {
       const access = await (navigator as any).requestMIDIAccess();
       this.midiAccess = access;
       this.selectMidiPort();
+      this.selectMidiInput();
       access.onstatechange = () => {
         this.selectMidiPort();
+        this.selectMidiInput();
         this.onMidiStateChange?.();
       };
     } catch {
@@ -168,6 +187,17 @@ export class ObjectSoundEngine {
     this.midiOutput = chordcat || outputs[0];
     this.lastMidiExpression.clear();
     this.onMidiStateChange?.();
+  }
+
+  private selectMidiInput(): void {
+    if (!this.midiAccess) return;
+    const inputs = (Array.from(this.midiAccess.inputs.values()) as any[])
+      .filter((input) => input.state !== 'disconnected');
+    const chordcat = inputs.find((input) => {
+      const name = (input.name || '').toLowerCase();
+      return name.includes('chordcat') || name.includes('alphatheta');
+    });
+    this.chordcatInput.connect(chordcat || null);
   }
 
   startMode(mode: ExperienceMode, artwork: ArtworkDefinition): void {

@@ -6,6 +6,7 @@ import type {
   TrackMixState,
 } from '../artwork/artworkTypes';
 import type { PixelMetrics } from '../artwork/pixelAnalysis';
+import type { ChordcatInputSnapshot } from '../midi/ChordcatInput';
 
 interface Props {
   artwork: ArtworkDefinition;
@@ -22,7 +23,9 @@ interface Props {
   midiDeviceName?: string;
   isMidiConnected?: boolean;
   midiPorts?: { id: string; name: string }[];
+  chordcatInput: ChordcatInputSnapshot;
   onSelectMidiPort?: (id: string) => void;
+  onFullCalibration: () => void;
   onTestTrack?: (trackNum: number) => void;
   isNarrationEnabled: boolean;
   onToggleNarration: () => void;
@@ -47,7 +50,9 @@ export function DebugPanel({
   midiDeviceName,
   isMidiConnected,
   midiPorts = [],
+  chordcatInput,
   onSelectMidiPort,
+  onFullCalibration,
   onTestTrack,
   isNarrationEnabled,
   onToggleNarration,
@@ -59,6 +64,8 @@ export function DebugPanel({
   const activeRegion = activeRegionId
     ? artwork.regions.find((region) => region.id === activeRegionId) ?? null
     : null;
+  const inputReady = chordcatInput.status === 'ready-custom';
+  const isCalibrating = chordcatInput.status === 'full-calibration';
 
   return (
     <div className="debug-panel">
@@ -193,6 +200,55 @@ export function DebugPanel({
           </span>
           <span className="debug-label">Protocol</span>
           <span className="debug-value">8ch · Note · CC11 · CC74</span>
+          <span className="debug-label">Input</span>
+          <span className="debug-value">{chordcatInput.inputName}</span>
+        </div>
+
+        <div className={`calibration-card ${inputReady ? 'ready' : ''}`}>
+          <div className="calibration-title-row">
+            <div>
+              <span className="debug-label">16-key input</span>
+              <strong>{inputReady ? 'Ready' : isCalibrating ? 'Calibrating' : 'Calibration required'}</strong>
+            </div>
+            <span className={`micro-badge ${inputReady ? 'connected' : ''}`}>
+              {chordcatInput.status.replaceAll('-', ' ')}
+            </span>
+          </div>
+
+          <p className="calibration-message" aria-live="polite">{chordcatInput.message}</p>
+
+          <div className="calibration-grid" aria-label="CHORDCAT sixteen-key calibration progress">
+            {Array.from({ length: 16 }, (_, index) => {
+              const cell = index + 1;
+              const captured = chordcatInput.status === 'full-calibration'
+                ? cell < chordcatInput.calibrationStep
+                : inputReady;
+              return (
+                <span
+                  key={cell}
+                  className={`${captured ? 'captured' : ''} ${chordcatInput.lastCell === cell ? 'active' : ''}`}
+                >
+                  {cell}
+                </span>
+              );
+            })}
+          </div>
+
+          {inputReady && (
+            <div className="calibration-meta">
+              <span>Custom 16-key map</span>
+              <span>{chordcatInput.lastSignature || 'Waiting for input'}</span>
+            </div>
+          )}
+
+          <div className="calibration-actions single">
+            <button
+              onClick={onFullCalibration}
+              disabled={chordcatInput.status === 'disconnected'}
+            >
+              {inputReady ? 'Recalibrate 16 keys' : 'Calibrate 16 keys'}
+            </button>
+          </div>
         </div>
         <div className="track-pads-grid">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((trackNumber) => {
