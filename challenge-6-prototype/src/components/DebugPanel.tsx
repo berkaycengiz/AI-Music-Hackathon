@@ -213,12 +213,6 @@ export function DebugPanel({
           </span>
           <span className="debug-label">Protocol</span>
           <span className="debug-value">8ch · Note · CC11 · CC74</span>
-          <span className="debug-label">Audio</span>
-          <span className="debug-value">
-            {isMidiConnected ? 'CHORDCAT only · browser muted' : 'Browser preview'}
-          </span>
-          <span className="debug-label">Timing</span>
-          <span className="debug-value">Tone transport · 1/8 quantized</span>
           <span className="debug-label">Input</span>
           <span className="debug-value">{chordcatInput.inputName}</span>
         </div>

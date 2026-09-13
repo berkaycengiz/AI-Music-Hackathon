@@ -6,7 +6,7 @@ An accessible tactile-music installation prototype for Challenge 6. A visitor ex
 
 ### 4×4 Melodies (default)
 
-The artwork is divided into sixteen numbered cells matching CHORDCAT's sixteen calibrated keys. All nine museum artworks have a curated 4×4 semantic analysis: every cell has a visual meaning, objective visual metrics, one of four motif families (atmosphere, geometry, human, nature), and its own deterministic mini-loop. Mouse input and CHORDCAT input share the same cell order.
+The artwork is divided into sixteen numbered cells matching CHORDCAT's sixteen calibrated keys. **The Kiss** is the first fully curator-authored example: every cell has a visual meaning, one of four motif families (atmosphere, geometry, human, nature), and its own quantized melody. Other artworks temporarily fall back to spatial variations of their closest curated theme. Mouse input and CHORDCAT input share the same cell order.
 
 ### Full Composition
 
@@ -26,7 +26,7 @@ Open the Vite URL, choose an artwork and experience, then select **Begin explora
 ## Prototype interaction
 
 - 4×4 Melodies displays sixteen numbered cells and clearly highlights the selected cell.
-- Every museum artwork exposes its visual-to-musical reasoning live in the facilitator panel.
+- The Kiss exposes its visual-to-musical reasoning live in the facilitator panel.
 - Full Composition displays the original musical centers and smooth stem mixing without grid lines.
 - A 140 ms dwell prevents accidental boundary triggers without requiring continued pointer movement.
 - Overlap priority and hysteresis keep region changes stable.
@@ -36,9 +36,9 @@ Open the Vite URL, choose an artwork and experience, then select **Begin explora
 
 ## CHORDCAT architecture
 
-CHORDCAT is the eventual sound engine **and** physical controller, not the user-facing product. T2 is reserved as a silent controller track; T1/T3/T4 hold the backing arrangement, and the browser sends semantic motifs to T5–T8. Tone.js supplies a shared musical transport and quantizes motif starts to an eighth-note boundary before Web MIDI sends timestamped Note On/Off messages. The prototype CC11 expression map in Full Composition still requires hardware validation.
+CHORDCAT is the eventual sound engine **and** physical controller, not the user-facing product. In the installation, its tracks hold the curated artwork arrangement while the web layer maps the sixteen physical keys to artwork cells. The current bridge sends note messages in 4×4 Melodies and a prototype CC11 expression map in Full Composition. Track-level expression must be validated on the physical unit before the demo mapping is frozen.
 
-Browser audio is a deterministic rehearsal fallback so the complete interaction can be developed without hardware. It automatically goes silent when a MIDI output is connected, preventing the browser oscillator layer from doubling CHORDCAT's audio.
+Browser audio is a deterministic rehearsal fallback so the complete interaction can be developed without hardware. It does not claim to reproduce CHORDCAT's internal sound library.
 
 ## Project structure
 

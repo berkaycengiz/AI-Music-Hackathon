@@ -24,7 +24,7 @@ import {
 const MODE_COPY: Record<ExperienceMode, { label: string; short: string }> = {
   'region-chords': {
     label: '4×4 Melodies',
-    short: 'Sixteen curated cells generate quantized visual-to-music mini-loops.',
+    short: 'Sixteen artwork cells perform spatial variations of its musical themes.',
   },
   'full-composition': {
     label: 'Full Composition',

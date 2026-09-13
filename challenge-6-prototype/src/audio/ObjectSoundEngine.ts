@@ -5,7 +5,6 @@ import type {
   Point,
   TrackMixState,
 } from '../artwork/artworkTypes';
-import { getTransport, now as toneNow, start as startTone } from 'tone';
 import { polygonCenter } from '../artwork/regionLookup';
 import { ChordcatInput } from '../midi/ChordcatInput';
 import type { ChordcatInputSnapshot } from '../midi/ChordcatInput';
@@ -36,13 +35,6 @@ interface CompositionTrack {
 const LOOK_AHEAD_SECONDS = 0.12;
 const SCHEDULER_INTERVAL_MS = 25;
 const MASTER_LEVEL = 0.58;
-const MOTIF_SWITCH_QUANTIZATION = '8n';
-
-function motifSubdivision(stepBeats: number): '16n' | '8n' | '4n' {
-  if (stepBeats <= 0.25) return '16n';
-  if (stepBeats <= 0.5) return '8n';
-  return '4n';
-}
 
 function baseLevelForRole(role: ArtworkRegion['musicalRole']): number {
   switch (role) {
@@ -69,8 +61,6 @@ export class ObjectSoundEngine {
   private activeRegionVoices = new Map<string, ActiveVoice>();
   private activeMidiChords = new Map<string, ActiveMidiChord>();
   private arpeggioTimers = new Map<string, number>();
-  private motifTransportEvents = new Map<string, number>();
-  private semanticMidiTracks = new Map<string, number>();
 
   private compositionTracks = new Map<string, CompositionTrack>();
   private compositionTimer: number | null = null;
@@ -116,7 +106,6 @@ export class ObjectSoundEngine {
     this.masterFilter.connect(this.ctx.destination);
 
     if (this.ctx.state === 'suspended') await this.ctx.resume();
-    await startTone();
     void this.initMidi();
     this.initialized = true;
   }
@@ -216,10 +205,6 @@ export class ObjectSoundEngine {
     this.stopAll();
     this.mode = mode;
     this.performanceTempo = artwork.tempo;
-    const transport = getTransport();
-    transport.bpm.value = artwork.tempo;
-    transport.timeSignature = 4;
-    if (transport.state !== 'started') transport.start();
     if (mode === 'full-composition') this.startComposition(artwork);
   }
 
@@ -239,29 +224,11 @@ export class ObjectSoundEngine {
   }
 
   stopRegionSound(regionId: string, releaseMs = 300): void {
-    const motifEvent = this.motifTransportEvents.get(regionId);
-    if (motifEvent !== undefined) {
-      getTransport().clear(motifEvent);
-      this.motifTransportEvents.delete(regionId);
-    }
-
     const timer = this.arpeggioTimers.get(regionId);
     if (timer) {
       window.clearInterval(timer);
       this.arpeggioTimers.delete(regionId);
     }
-
-    const semanticTrack = this.semanticMidiTracks.get(regionId);
-    if (semanticTrack !== undefined && this.midiOutput) {
-      const channel = Math.max(0, Math.min(7, semanticTrack - 1));
-      try {
-        this.midiOutput.send([0xb0 + channel, 123, 0]);
-        this.midiOutput.send([0xb0 + channel, 120, 0]);
-      } catch {
-        // The scheduled note-off remains as a second safety net.
-      }
-    }
-    this.semanticMidiTracks.delete(regionId);
 
     const midiChord = this.activeMidiChords.get(regionId);
     if (midiChord && this.midiOutput) {
@@ -386,9 +353,7 @@ export class ObjectSoundEngine {
     level: number,
     waveform: OscillatorType,
   ): void {
-    // In hardware mode CHORDCAT's saved project owns the backing arrangement.
-    // The browser scheduler remains active for state/mix, but must not double it.
-    if (!this.ctx || this.midiOutput) return;
+    if (!this.ctx) return;
     const oscillator = this.ctx.createOscillator();
     const envelope = this.ctx.createGain();
     const end = time + duration;
@@ -478,11 +443,6 @@ export class ObjectSoundEngine {
   }
 
   stopAll(): void {
-    const transport = getTransport();
-    for (const eventId of this.motifTransportEvents.values()) transport.clear(eventId);
-    this.motifTransportEvents.clear();
-    transport.stop();
-
     if (this.compositionTimer !== null) window.clearInterval(this.compositionTimer);
     this.compositionTimer = null;
     this.compositionArtwork = null;
@@ -500,7 +460,6 @@ export class ObjectSoundEngine {
     this.arpeggioTimers.clear();
     this.activeRegionVoices.clear();
     this.activeMidiChords.clear();
-    this.semanticMidiTracks.clear();
     this.lastMidiExpression.clear();
 
     if (this.masterGain && this.ctx) {
@@ -563,44 +522,37 @@ export class ObjectSoundEngine {
     if (region.semanticMotif) {
       let step = 0;
       const motif = region.semanticMotif;
-      const stepDurationSeconds = (60 / this.performanceTempo) * motif.stepBeats;
-      const playStep = (scheduledToneTime: number) => {
+      const stepMs = (60_000 / this.performanceTempo) * motif.stepBeats;
+      const playStep = () => {
         const note = motif.steps[step % motif.steps.length];
         step += 1;
         if (note === null) return;
 
-        const durationSeconds = Math.max(0.08, stepDurationSeconds * motif.gate);
-        if (!this.midiOutput) {
-          const delaySeconds = Math.max(0, scheduledToneTime - toneNow());
-          this.scheduleBrowserMotifNote(
-            voiceGain,
-            note,
-            motif.waveform,
-            ctx.currentTime + delaySeconds,
-            durationSeconds,
-            motif.velocity,
-          );
-        }
-        this.sendMidiPulse(
-          region.chordcatTrack,
-          note,
-          motif.velocity,
-          durationSeconds * 1000,
-          scheduledToneTime,
-        );
+        const durationSeconds = Math.max(0.08, (stepMs * motif.gate) / 1000);
+        const oscillator = ctx.createOscillator();
+        const envelope = ctx.createGain();
+        oscillator.type = motif.waveform;
+        oscillator.frequency.value = midiToFreq(note);
+        envelope.gain.setValueAtTime(0.0001, ctx.currentTime);
+        envelope.gain.exponentialRampToValueAtTime(0.32, ctx.currentTime + 0.025);
+        envelope.gain.setValueAtTime(0.24, ctx.currentTime + Math.max(0.04, durationSeconds - 0.1));
+        envelope.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSeconds);
+        oscillator.connect(envelope);
+        envelope.connect(voiceGain);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + durationSeconds + 0.02);
+        oscillator.onended = () => {
+          oscillator.disconnect();
+          envelope.disconnect();
+        };
+        this.sendMidiPulse(region.chordcatTrack, note, 96, durationSeconds * 1000);
       };
-
-      const transport = getTransport();
-      const nextBoundary = transport.nextSubdivision(MOTIF_SWITCH_QUANTIZATION);
-      const startAt = transport.seconds + Math.max(0, nextBoundary - toneNow());
-      const eventId = transport.scheduleRepeat(
-        playStep,
-        motifSubdivision(motif.stepBeats),
-        startAt,
-      );
-      this.motifTransportEvents.set(region.id, eventId);
-      this.semanticMidiTracks.set(region.id, region.chordcatTrack);
-    } else if (!this.midiOutput && (region.dynamicBehavior === 'arpeggio' || region.dynamicBehavior === 'sparkle')) {
+      playStep();
+      const timer = window.setInterval(() => {
+        if (this.activeRegionVoices.has(region.id)) playStep();
+      }, stepMs);
+      this.arpeggioTimers.set(region.id, timer);
+    } else if (region.dynamicBehavior === 'arpeggio' || region.dynamicBehavior === 'sparkle') {
       let step = 0;
       const playStep = () => {
         const octave = region.dynamicBehavior === 'sparkle' ? 12 : 0;
@@ -623,7 +575,7 @@ export class ObjectSoundEngine {
         if (this.activeRegionVoices.has(region.id)) playStep();
       }, 240);
       this.arpeggioTimers.set(region.id, timer);
-    } else if (!this.midiOutput) {
+    } else {
       midiNotes.forEach((note, index) => {
         const frequency = midiToFreq(note);
         const primary = ctx.createOscillator();
@@ -663,51 +615,12 @@ export class ObjectSoundEngine {
     }
   }
 
-  private scheduleBrowserMotifNote(
-    voiceGain: GainNode,
-    note: number,
-    waveform: OscillatorType,
-    startTime: number,
-    durationSeconds: number,
-    velocity: number,
-  ): void {
-    if (!this.ctx) return;
-    const oscillator = this.ctx.createOscillator();
-    const envelope = this.ctx.createGain();
-    const peak = Math.max(0.14, Math.min(0.34, velocity / 127 * 0.34));
-    const endTime = startTime + durationSeconds;
-    oscillator.type = waveform;
-    oscillator.frequency.setValueAtTime(midiToFreq(note), startTime);
-    envelope.gain.setValueAtTime(0.0001, startTime);
-    envelope.gain.exponentialRampToValueAtTime(peak, startTime + 0.025);
-    envelope.gain.setValueAtTime(peak * 0.75, Math.max(startTime + 0.04, endTime - 0.1));
-    envelope.gain.exponentialRampToValueAtTime(0.0001, endTime);
-    oscillator.connect(envelope);
-    envelope.connect(voiceGain);
-    oscillator.start(startTime);
-    oscillator.stop(endTime + 0.02);
-    oscillator.onended = () => {
-      oscillator.disconnect();
-      envelope.disconnect();
-    };
-  }
-
-  private sendMidiPulse(
-    trackNumber: number,
-    note: number,
-    velocity: number,
-    durationMs: number,
-    scheduledToneTime?: number,
-  ): void {
+  private sendMidiPulse(trackNumber: number, note: number, velocity: number, durationMs: number): void {
     if (!this.midiOutput) return;
     const channel = Math.max(0, Math.min(7, trackNumber - 1));
-    const delayMs = scheduledToneTime === undefined
-      ? 0
-      : Math.max(0, (scheduledToneTime - toneNow()) * 1000);
-    const startsAt = window.performance.now() + delayMs;
     try {
-      this.midiOutput.send([0x90 + channel, note, velocity], startsAt);
-      this.midiOutput.send([0x80 + channel, note, 0], startsAt + durationMs);
+      this.midiOutput.send([0x90 + channel, note, velocity]);
+      this.midiOutput.send([0x80 + channel, note, 0], window.performance.now() + durationMs);
     } catch {
       // The browser voice remains the reliable prototype fallback.
     }
