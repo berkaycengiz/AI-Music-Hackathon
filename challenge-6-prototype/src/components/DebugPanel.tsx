@@ -121,6 +121,20 @@ export function DebugPanel({
                 </span>
                 <p><b>Visual</b>{activeRegion.semanticMotif.visualMeaning}</p>
                 <p><b>Music</b>{activeRegion.semanticMotif.musicalTranslation}</p>
+                {activeRegion.semanticMotif.measuredFeatures && (
+                  <div className="measured-features" aria-label="Python-measured visual features">
+                    <span>PYTHON ANALYSIS</span>
+                    <span>Edges {Math.round(activeRegion.semanticMotif.measuredFeatures.edgeDensity * 100)}%</span>
+                    <span>Angular {Math.round(activeRegion.semanticMotif.measuredFeatures.angularity * 100)}%</span>
+                    <span>Flow {Math.round(activeRegion.semanticMotif.measuredFeatures.flow * 100)}%</span>
+                    <span>
+                      Direction {activeRegion.semanticMotif.measuredFeatures.orientationDegrees === null
+                        ? 'neutral'
+                        : `${Math.round(activeRegion.semanticMotif.measuredFeatures.orientationDegrees)}°`}
+                    </span>
+                    <span>{activeRegion.semanticMotif.measuredFeatures.noteCount} notes</span>
+                  </div>
+                )}
               </div>
             )}
             <div className="debug-sound-list">

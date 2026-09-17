@@ -7,3 +7,7 @@ dist/
 .env
 .env.*
 *.env
+.venv/
+__pycache__/
+*.py[cod]
+challenge-6-prototype/chordcat-image-sonification-team/chordcat-image-sonification/results/

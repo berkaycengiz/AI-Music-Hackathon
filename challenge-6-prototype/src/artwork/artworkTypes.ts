@@ -34,6 +34,20 @@ export interface SemanticMotif {
   stepBeats: number;
   /** Fraction of a step for which each note is held. Values above 1 create legato. */
   gate: number;
+  /** Average note intensity measured/generated for this cell. */
+  velocity?: number;
+  /** Quiet lower-register harmony held behind the repeating melody. */
+  accompaniment?: number[];
+  /** Offline Python measurements retained for facilitator QA and explanation. */
+  measuredFeatures?: {
+    edgeDensity: number;
+    angularity: number;
+    flow: number;
+    orientationDegrees: number | null;
+    complexity: number;
+    chordSymbol: string;
+    noteCount: number;
+  };
   waveform: OscillatorType;
 }
 

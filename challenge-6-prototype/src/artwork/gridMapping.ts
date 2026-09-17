@@ -10,6 +10,8 @@ import type {
 import type { GridCellAnalysis, VisualMovement } from './gridAnalysisTypes';
 import { dominantFamily } from './gridAnalysisTypes';
 import { getGridAnalysis } from './grid-analyses';
+import { getGeneratedSonification } from './generated-sonification';
+import type { GeneratedSquareSonification } from './generatedSonificationTypes';
 import { polygonCenter } from './regionLookup';
 
 export const ARTWORK_GRID_SIZE = 4;
@@ -113,6 +115,51 @@ function clamp01(value: number): number {
   return Math.max(0, Math.min(1, value));
 }
 
+function rgbToHex(rgb: number[]): string {
+  const [red = 0, green = 0, blue = 0] = rgb;
+  return `#${[red, green, blue].map((value) => value.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function measuredMovement(
+  square: GeneratedSquareSonification,
+  fallback: VisualMovement,
+): VisualMovement {
+  const angle = square.orientation_degrees;
+  if (angle === null || square.orientation_strength < 0.45) return fallback;
+  if (Math.abs(angle) < 15) return 'horizontal';
+  if (Math.abs(angle) > 75) return 'vertical';
+  return angle > 0 ? 'rising' : 'falling';
+}
+
+function mergeMeasuredAnalysis(
+  analysis: GridCellAnalysis,
+  square: GeneratedSquareSonification,
+): GridCellAnalysis {
+  const primary = square.dominant_colors[0];
+  const lightnesses = square.dominant_colors
+    .filter((color) => color.weight > 0)
+    .map((color) => color.lightness);
+  const contrast = lightnesses.length > 1
+    ? (Math.max(...lightnesses) - Math.min(...lightnesses)) / 100
+    : 0;
+  // Orange/red is treated as warm and cyan/blue as cool on a continuous axis.
+  const warmth = Math.cos(((primary.hue - 30) * Math.PI) / 180);
+
+  return {
+    ...analysis,
+    movement: measuredMovement(square, analysis.movement),
+    energy: clamp01(analysis.energy * 0.35 + square.complexity * 0.65),
+    visualMetrics: {
+      color: rgbToHex(primary.rgb),
+      brightness: clamp01(primary.brightness),
+      saturation: clamp01(primary.saturation),
+      warmth,
+      contrast: clamp01(contrast),
+      edgeDensity: clamp01(square.edge_density),
+    },
+  };
+}
+
 function buildScaleNotes(artwork: ArtworkDefinition): number[] {
   const root = ROOT_PITCH_CLASS[artwork.keyRoot] ?? 0;
   const intervals = SCALE_INTERVALS[artwork.scale.toLowerCase()] || SCALE_INTERVALS.major;
@@ -165,6 +212,7 @@ function patternToMidi(
   analysis: GridCellAnalysis,
   family: MotifFamily,
   degrees: Array<number | null>,
+  chordDegree = 1,
 ): Array<number | null> {
   const scaleNotes = buildScaleNotes(artwork);
   const familyCenter: Record<MotifFamily, number> = {
@@ -181,9 +229,38 @@ function patternToMidi(
 
   return degrees.map((degree) => {
     if (degree === null) return null;
-    const index = Math.max(0, Math.min(scaleNotes.length - 1, baseIndex + degree + neighbourOffset));
+    const colorDegreeOffset = Math.max(0, Math.min(6, chordDegree - 1));
+    const index = Math.max(
+      0,
+      Math.min(scaleNotes.length - 1, baseIndex + degree + neighbourOffset + colorDegreeOffset),
+    );
     return scaleNotes[index];
   });
+}
+
+function accompanimentForDegree(artwork: ArtworkDefinition, chordDegree: number): number[] {
+  const scaleNotes = buildScaleNotes(artwork);
+  const rootPitchClass = ROOT_PITCH_CLASS[artwork.keyRoot] ?? 0;
+  const tonic = scaleNotes
+    .filter((note) => note % 12 === rootPitchClass)
+    .reduce((best, note) => Math.abs(note - 40) < Math.abs(best - 40) ? note : best);
+  const tonicIndex = scaleNotes.indexOf(tonic);
+  const chordRootIndex = tonicIndex + Math.max(0, Math.min(6, chordDegree - 1));
+  return [0, 2, 4].map((offset) => scaleNotes[Math.min(scaleNotes.length - 1, chordRootIndex + offset)]);
+}
+
+function applyMeasuredRhythm(
+  melodicSteps: Array<number | null>,
+  square: GeneratedSquareSonification,
+): Array<number | null> {
+  const pitches = melodicSteps.filter((note): note is number => note !== null);
+  if (pitches.length === 0 || square.notes.length === 0) return melodicSteps;
+  const result: Array<number | null> = Array.from({ length: 8 }, () => null);
+  square.notes.forEach((note, index) => {
+    const slot = Math.max(0, Math.min(7, Math.round(note.start * 2)));
+    result[slot] = melodicSteps[slot] ?? pitches[index % pitches.length];
+  });
+  return result;
 }
 
 function translationFor(analysis: GridCellAnalysis, family: MotifFamily): string {
@@ -209,11 +286,26 @@ function translationFor(analysis: GridCellAnalysis, family: MotifFamily): string
   return `${familyPhrase[family]} ${movementPhrase[analysis.movement]} ${activity}`;
 }
 
-function createSemanticMotif(artwork: ArtworkDefinition, analysis: GridCellAnalysis): SemanticMotif {
+function createSemanticMotif(
+  artwork: ArtworkDefinition,
+  analysis: GridCellAnalysis,
+  generatedSquare: GeneratedSquareSonification | null,
+): SemanticMotif {
   const family = dominantFamily(analysis.familyWeights);
   const degrees = makeDegreePattern(artwork, analysis, family);
-  const steps = patternToMidi(artwork, analysis, family, degrees);
-  const stepBeats = analysis.energy > 0.78 ? 0.25 : analysis.energy < 0.28 ? 1 : 0.5;
+  const melodicSteps = patternToMidi(
+    artwork,
+    analysis,
+    family,
+    degrees,
+    generatedSquare?.chord.degree,
+  );
+  const steps = generatedSquare
+    ? applyMeasuredRhythm(melodicSteps, generatedSquare)
+    : melodicSteps;
+  const stepBeats = generatedSquare
+    ? 0.5
+    : analysis.energy > 0.78 ? 0.25 : analysis.energy < 0.28 ? 1 : 0.5;
   const baseGate: Record<MotifFamily, number> = {
     atmosphere: 1.75,
     geometry: 0.58,
@@ -221,13 +313,43 @@ function createSemanticMotif(artwork: ArtworkDefinition, analysis: GridCellAnaly
     nature: 0.78,
   };
 
+  const measuredGate = generatedSquare && generatedSquare.notes.length
+    ? generatedSquare.notes.reduce((sum, note) => sum + note.duration, 0)
+      / generatedSquare.notes.length / stepBeats
+    : null;
+  const measuredVelocity = generatedSquare && generatedSquare.notes.length
+    ? Math.round(
+        generatedSquare.notes.reduce((sum, note) => sum + note.velocity, 0)
+        / generatedSquare.notes.length,
+      )
+    : undefined;
+
   return {
     family,
     visualMeaning: analysis.interpretation,
-    musicalTranslation: translationFor(analysis, family),
+    musicalTranslation: generatedSquare
+      ? `${translationFor(analysis, family)} Measured contours produce ${generatedSquare.notes.length} attacks with ${generatedSquare.notes[0]?.articulation || 'mixed'} articulation.`
+      : translationFor(analysis, family),
     steps,
     stepBeats,
-    gate: Math.max(0.42, baseGate[family] - analysis.energy * 0.12),
+    gate: measuredGate === null
+      ? Math.max(0.42, baseGate[family] - analysis.energy * 0.12)
+      : Math.max(0.32, Math.min(4, measuredGate)),
+    velocity: measuredVelocity,
+    accompaniment: generatedSquare
+      ? accompanimentForDegree(artwork, generatedSquare.chord.degree)
+      : undefined,
+    measuredFeatures: generatedSquare
+      ? {
+          edgeDensity: generatedSquare.edge_density,
+          angularity: generatedSquare.angularity,
+          flow: generatedSquare.flow,
+          orientationDegrees: generatedSquare.orientation_degrees,
+          complexity: generatedSquare.complexity,
+          chordSymbol: generatedSquare.chord.symbol,
+          noteCount: generatedSquare.notes.length,
+        }
+      : undefined,
     waveform: FAMILY_WAVEFORM[family],
   };
 }
@@ -283,11 +405,13 @@ const FALLBACK_BEHAVIORS: DynamicBehavior[] = ['sustained-chord', 'arpeggio', 'p
 export function createGridRegions(artwork: ArtworkDefinition): ArtworkRegion[] {
   if (artwork.regions.length === 0) return [];
   const curatedAnalysis = getGridAnalysis(artwork.id);
+  const generatedAnalysis = getGeneratedSonification(artwork.id);
 
   return Array.from({ length: ARTWORK_GRID_CELL_COUNT }, (_, index) => {
     const cell = index + 1;
     const source = closestSourceRegion(artwork, gridCellCenter(cell));
     const analysis = curatedAnalysis?.cells[index] || null;
+    const generatedSquare = generatedAnalysis?.squares[String(index)] || null;
 
     if (!analysis) {
       const variation = index % ARTWORK_GRID_SIZE;
@@ -305,26 +429,31 @@ export function createGridRegions(artwork: ArtworkDefinition): ArtworkRegion[] {
       };
     }
 
-    const semanticMotif = createSemanticMotif(artwork, analysis);
+    const measuredAnalysis = generatedSquare
+      ? mergeMeasuredAnalysis(analysis, generatedSquare)
+      : analysis;
+    const semanticMotif = createSemanticMotif(artwork, measuredAnalysis, generatedSquare);
     const family = semanticMotif.family;
     const midiNotes = Array.from(new Set(semanticMotif.steps.filter((note): note is number => note !== null)));
 
     return {
       ...source,
       id: `${artwork.id}-grid-${cell}`,
-      label: `Cell ${String(cell).padStart(2, '0')} · ${analysis.label}`,
-      spokenLabel: `Cell ${cell}. ${analysis.interpretation}`,
+      label: `Cell ${String(cell).padStart(2, '0')} · ${measuredAnalysis.label}`,
+      spokenLabel: `Cell ${cell}. ${measuredAnalysis.interpretation}`,
       polygon: gridCellPolygon(cell),
       priority: 1,
       chordcatTrack: CHORDCAT_MELODY_TRACK,
-      chordName: `${artwork.keyRoot} ${family} · ${analysis.movement}`,
+      chordName: generatedSquare
+        ? `${artwork.keyRoot} ${generatedSquare.chord.symbol} · ${measuredAnalysis.movement}`
+        : `${artwork.keyRoot} ${family} · ${measuredAnalysis.movement}`,
       midiNotes: midiNotes.length ? midiNotes : variedNotes(source.midiNotes, index % ARTWORK_GRID_SIZE),
       musicalRole: FAMILY_ROLE[family],
       dynamicBehavior: FAMILY_BEHAVIOR[family],
-      timbreDescription: `${FAMILY_TIMBRE[family]} · ${analysis.label}`,
+      timbreDescription: `${FAMILY_TIMBRE[family]} · ${measuredAnalysis.label}`,
       attackMs: family === 'human' ? 120 : family === 'atmosphere' ? 240 : 35,
       releaseMs: family === 'atmosphere' ? 850 : family === 'human' ? 480 : 260,
-      color: analysis.visualMetrics.color,
+      color: measuredAnalysis.visualMetrics.color,
       semanticMotif,
     };
   });

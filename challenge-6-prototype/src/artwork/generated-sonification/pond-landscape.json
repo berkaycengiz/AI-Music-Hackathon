@@ -1,0 +1,1971 @@
+{
+  "global": {
+    "key": "G",
+    "tonic_pc": 7,
+    "mode": "major",
+    "tempo": 107,
+    "scale": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ]
+  },
+  "image": {
+    "source_size": [
+      800,
+      586
+    ],
+    "grid_size": [
+      800,
+      588
+    ]
+  },
+  "squares": {
+    "0": {
+      "bounds": [
+        0,
+        0,
+        200,
+        147
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            131,
+            184,
+            222
+          ],
+          "hue": 205.05494505494508,
+          "saturation": 0.40990990990991,
+          "brightness": 0.8705882352941177,
+          "lightness": 72.45521545410156,
+          "weight": 0.53564453125
+        },
+        {
+          "rgb": [
+            119,
+            167,
+            216
+          ],
+          "hue": 210.30927835051548,
+          "saturation": 0.44907407407407407,
+          "brightness": 0.8470588235294118,
+          "lightness": 66.93147277832031,
+          "weight": 0.349853515625
+        },
+        {
+          "rgb": [
+            188,
+            208,
+            217
+          ],
+          "hue": 198.62068965517244,
+          "saturation": 0.13364055299539163,
+          "brightness": 0.8509803921568627,
+          "lightness": 82.17108154296875,
+          "weight": 0.114501953125
+        }
+      ],
+      "edge_density": 0.0019577423167848698,
+      "long_contour_ratio": 0.0,
+      "angularity": 0.9,
+      "orientation_degrees": null,
+      "orientation_strength": 0.0,
+      "smoothness": 0.09999999999999998,
+      "flow": 0.0,
+      "complexity": 0.3213626625295508,
+      "index": 0,
+      "chord": {
+        "degree": 6,
+        "symbol": "vi",
+        "pitches": [
+          64,
+          67,
+          71
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 76,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 79,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 79,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 83,
+          "start": 1.0,
+          "duration": 0.48,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 79,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 79,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 3.0,
+          "duration": 0.48,
+          "velocity": 79,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "1": {
+      "bounds": [
+        200,
+        0,
+        400,
+        147
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            154,
+            195,
+            216
+          ],
+          "hue": 200.3225806451613,
+          "saturation": 0.2870370370370371,
+          "brightness": 0.8470588235294118,
+          "lightness": 76.71818542480469,
+          "weight": 0.5595703125
+        },
+        {
+          "rgb": [
+            101,
+            108,
+            88
+          ],
+          "hue": 81.0,
+          "saturation": 0.18518518518518517,
+          "brightness": 0.4235294117647059,
+          "lightness": 44.62144470214844,
+          "weight": 0.27978515625
+        },
+        {
+          "rgb": [
+            142,
+            147,
+            80
+          ],
+          "hue": 64.47761194029849,
+          "saturation": 0.45578231292517,
+          "brightness": 0.5764705882352941,
+          "lightness": 59.090816497802734,
+          "weight": 0.16064453125
+        }
+      ],
+      "edge_density": 0.17357417257683216,
+      "long_contour_ratio": 0.6196228458127842,
+      "angularity": 0.9523809523809523,
+      "orientation_degrees": 10.635876408253145,
+      "orientation_strength": 0.7233890721834031,
+      "smoothness": 0.04761904761904767,
+      "flow": 0.029505849800608802,
+      "complexity": 0.8974493942080379,
+      "index": 1,
+      "chord": {
+        "degree": 6,
+        "symbol": "vi",
+        "pitches": [
+          64,
+          67,
+          71
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 76,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "2": {
+      "bounds": [
+        400,
+        0,
+        600,
+        147
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            161,
+            202,
+            221
+          ],
+          "hue": 198.99999999999997,
+          "saturation": 0.2714932126696833,
+          "brightness": 0.8666666666666667,
+          "lightness": 79.07642364501953,
+          "weight": 0.618896484375
+        },
+        {
+          "rgb": [
+            101,
+            112,
+            80
+          ],
+          "hue": 80.625,
+          "saturation": 0.2857142857142857,
+          "brightness": 0.4392156862745098,
+          "lightness": 45.39400100708008,
+          "weight": 0.2080078125
+        },
+        {
+          "rgb": [
+            140,
+            141,
+            57
+          ],
+          "hue": 60.71428571428571,
+          "saturation": 0.5957446808510639,
+          "brightness": 0.5529411764705883,
+          "lightness": 57.069026947021484,
+          "weight": 0.173095703125
+        }
+      ],
+      "edge_density": 0.13826093380614657,
+      "long_contour_ratio": 0.6033727980457754,
+      "angularity": 0.9449954914337241,
+      "orientation_degrees": 11.787422609175344,
+      "orientation_strength": 0.8966882034585549,
+      "smoothness": 0.05500450856627592,
+      "flow": 0.033188224238766724,
+      "complexity": 0.7800964568717799,
+      "index": 2,
+      "chord": {
+        "degree": 6,
+        "symbol": "vi",
+        "pitches": [
+          64,
+          67,
+          71
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 76,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "3": {
+      "bounds": [
+        600,
+        0,
+        800,
+        147
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            127,
+            177,
+            219
+          ],
+          "hue": 207.3913043478261,
+          "saturation": 0.4200913242009132,
+          "brightness": 0.8588235294117647,
+          "lightness": 70.18672180175781,
+          "weight": 0.789794921875
+        },
+        {
+          "rgb": [
+            116,
+            126,
+            60
+          ],
+          "hue": 69.09090909090908,
+          "saturation": 0.5238095238095238,
+          "brightness": 0.49411764705882355,
+          "lightness": 50.7309455871582,
+          "weight": 0.10888671875
+        },
+        {
+          "rgb": [
+            95,
+            112,
+            91
+          ],
+          "hue": 108.57142857142857,
+          "saturation": 0.18749999999999997,
+          "brightness": 0.4392156862745098,
+          "lightness": 45.18018341064453,
+          "weight": 0.101318359375
+        }
+      ],
+      "edge_density": 0.0585475768321513,
+      "long_contour_ratio": 0.4433184346803469,
+      "angularity": 0.9492600422832981,
+      "orientation_degrees": -40.05836901251186,
+      "orientation_strength": 0.8160637221774947,
+      "smoothness": 0.05073995771670192,
+      "flow": 0.022493958630715283,
+      "complexity": 0.522520639503646,
+      "index": 3,
+      "chord": {
+        "degree": 6,
+        "symbol": "vi",
+        "pitches": [
+          64,
+          67,
+          71
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 76,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 79,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 69,
+          "start": 1.0,
+          "duration": 0.48,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 79,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 66,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 3.0,
+          "duration": 0.48,
+          "velocity": 79,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "4": {
+      "bounds": [
+        0,
+        147,
+        200,
+        294
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            138,
+            133,
+            102
+          ],
+          "hue": 51.6666666666667,
+          "saturation": 0.26086956521739124,
+          "brightness": 0.5411764705882353,
+          "lightness": 55.22590637207031,
+          "weight": 0.37353515625
+        },
+        {
+          "rgb": [
+            225,
+            196,
+            167
+          ],
+          "hue": 30.000000000000014,
+          "saturation": 0.2577777777777778,
+          "brightness": 0.8823529411764706,
+          "lightness": 80.84786224365234,
+          "weight": 0.37060546875
+        },
+        {
+          "rgb": [
+            199,
+            205,
+            204
+          ],
+          "hue": 170.00000000000003,
+          "saturation": 0.029268292682926862,
+          "brightness": 0.803921568627451,
+          "lightness": 81.91183471679688,
+          "weight": 0.255859375
+        }
+      ],
+      "edge_density": 0.09755466903073286,
+      "long_contour_ratio": 0.5808743841650561,
+      "angularity": 0.9174434087882823,
+      "orientation_degrees": 6.977037297464683,
+      "orientation_strength": 0.37007799753956844,
+      "smoothness": 0.08255659121171766,
+      "flow": 0.047955009078872776,
+      "complexity": 0.6381578674257806,
+      "index": 4,
+      "chord": {
+        "degree": 3,
+        "symbol": "iii",
+        "pitches": [
+          59,
+          62,
+          66
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 71,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 78,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "5": {
+      "bounds": [
+        200,
+        147,
+        400,
+        294
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            67,
+            70,
+            53
+          ],
+          "hue": 70.58823529411767,
+          "saturation": 0.24285714285714288,
+          "brightness": 0.27450980392156865,
+          "lightness": 28.875572204589844,
+          "weight": 0.46484375
+        },
+        {
+          "rgb": [
+            126,
+            120,
+            42
+          ],
+          "hue": 55.71428571428571,
+          "saturation": 0.6666666666666667,
+          "brightness": 0.49411764705882355,
+          "lightness": 49.48394775390625,
+          "weight": 0.271484375
+        },
+        {
+          "rgb": [
+            128,
+            130,
+            99
+          ],
+          "hue": 63.87096774193548,
+          "saturation": 0.2384615384615384,
+          "brightness": 0.5098039215686274,
+          "lightness": 53.584625244140625,
+          "weight": 0.263671875
+        }
+      ],
+      "edge_density": 0.25240100472813237,
+      "long_contour_ratio": 0.5793442858151796,
+      "angularity": 0.9306880964339528,
+      "orientation_degrees": 17.26864169089184,
+      "orientation_strength": 0.5294245676468983,
+      "smoothness": 0.06931190356604722,
+      "flow": 0.040155455269962226,
+      "complexity": 0.9757408337518835,
+      "index": 5,
+      "chord": {
+        "degree": 3,
+        "symbol": "iii",
+        "pitches": [
+          59,
+          62,
+          66
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 71,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 75,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 67,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 78,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 67,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 81,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 67,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 83,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 75,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 81,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 67,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 81,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 67,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 83,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 75,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "6": {
+      "bounds": [
+        400,
+        147,
+        600,
+        294
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            79,
+            86,
+            64
+          ],
+          "hue": 79.0909090909091,
+          "saturation": 0.25581395348837216,
+          "brightness": 0.33725490196078434,
+          "lightness": 35.2696533203125,
+          "weight": 0.44921875
+        },
+        {
+          "rgb": [
+            132,
+            132,
+            52
+          ],
+          "hue": 60.0,
+          "saturation": 0.6060606060606061,
+          "brightness": 0.5176470588235295,
+          "lightness": 53.6390266418457,
+          "weight": 0.341796875
+        },
+        {
+          "rgb": [
+            170,
+            171,
+            142
+          ],
+          "hue": 62.068965517241374,
+          "saturation": 0.1695906432748537,
+          "brightness": 0.6705882352941176,
+          "lightness": 69.15161895751953,
+          "weight": 0.208984375
+        }
+      ],
+      "edge_density": 0.2679521276595745,
+      "long_contour_ratio": 0.6140230515050813,
+      "angularity": 0.939712918660287,
+      "orientation_degrees": 10.289699712877319,
+      "orientation_strength": 0.43283091406784435,
+      "smoothness": 0.060287081339712945,
+      "flow": 0.037017657650545585,
+      "complexity": 0.9788995215311005,
+      "index": 6,
+      "chord": {
+        "degree": 4,
+        "symbol": "IV",
+        "pitches": [
+          60,
+          64,
+          67
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 72,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 79,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 69,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "7": {
+      "bounds": [
+        600,
+        147,
+        800,
+        294
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            76,
+            87,
+            82
+          ],
+          "hue": 152.72727272727275,
+          "saturation": 0.12643678160919544,
+          "brightness": 0.3411764705882353,
+          "lightness": 35.79656982421875,
+          "weight": 0.482177734375
+        },
+        {
+          "rgb": [
+            169,
+            189,
+            187
+          ],
+          "hue": 173.99999999999994,
+          "saturation": 0.10582010582010588,
+          "brightness": 0.7411764705882353,
+          "lightness": 74.98242950439453,
+          "weight": 0.2646484375
+        },
+        {
+          "rgb": [
+            115,
+            118,
+            70
+          ],
+          "hue": 63.75,
+          "saturation": 0.4067796610169491,
+          "brightness": 0.4627450980392157,
+          "lightness": 48.44744110107422,
+          "weight": 0.253173828125
+        }
+      ],
+      "edge_density": 0.2074468085106383,
+      "long_contour_ratio": 0.5181090761261966,
+      "angularity": 0.940149625935162,
+      "orientation_degrees": -7.146678944159264,
+      "orientation_strength": 0.5781886829081905,
+      "smoothness": 0.05985037406483795,
+      "flow": 0.03100902201254047,
+      "complexity": 0.9790523690773068,
+      "index": 7,
+      "chord": {
+        "degree": 4,
+        "symbol": "IV",
+        "pitches": [
+          60,
+          64,
+          67
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 72,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 73,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 65,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 65,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 65,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 73,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 65,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 65,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 73,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "8": {
+      "bounds": [
+        0,
+        294,
+        200,
+        441
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            187,
+            156,
+            118
+          ],
+          "hue": 33.04347826086958,
+          "saturation": 0.36898395721925126,
+          "brightness": 0.7333333333333333,
+          "lightness": 66.19473266601562,
+          "weight": 0.413818359375
+        },
+        {
+          "rgb": [
+            179,
+            156,
+            67
+          ],
+          "hue": 47.67857142857144,
+          "saturation": 0.6256983240223464,
+          "brightness": 0.7019607843137254,
+          "lightness": 64.7253646850586,
+          "weight": 0.390380859375
+        },
+        {
+          "rgb": [
+            90,
+            101,
+            102
+          ],
+          "hue": 185.00000000000003,
+          "saturation": 0.11764705882352941,
+          "brightness": 0.4,
+          "lightness": 41.978843688964844,
+          "weight": 0.19580078125
+        }
+      ],
+      "edge_density": 0.21904550827423167,
+      "long_contour_ratio": 0.5502105508117588,
+      "angularity": 0.9108040201005025,
+      "orientation_degrees": 24.71083040340488,
+      "orientation_strength": 0.6076014600055412,
+      "smoothness": 0.08919597989949746,
+      "flow": 0.049076569230697066,
+      "complexity": 0.9687814070351759,
+      "index": 8,
+      "chord": {
+        "degree": 2,
+        "symbol": "ii",
+        "pitches": [
+          57,
+          60,
+          64
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 69,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 78,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 79,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 81,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 78,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 79,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 79,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 81,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 78,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "9": {
+      "bounds": [
+        200,
+        294,
+        400,
+        441
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            182,
+            166,
+            132
+          ],
+          "hue": 40.8,
+          "saturation": 0.2747252747252747,
+          "brightness": 0.7137254901960784,
+          "lightness": 68.74567413330078,
+          "weight": 0.4189453125
+        },
+        {
+          "rgb": [
+            127,
+            148,
+            164
+          ],
+          "hue": 205.94594594594597,
+          "saturation": 0.225609756097561,
+          "brightness": 0.6431372549019608,
+          "lightness": 60.169456481933594,
+          "weight": 0.29541015625
+        },
+        {
+          "rgb": [
+            61,
+            64,
+            62
+          ],
+          "hue": 139.99999999999997,
+          "saturation": 0.046874999999999944,
+          "brightness": 0.25098039215686274,
+          "lightness": 26.62415885925293,
+          "weight": 0.28564453125
+        }
+      ],
+      "edge_density": 0.27567228132387706,
+      "long_contour_ratio": 0.6206896230215764,
+      "angularity": 0.9252704031465093,
+      "orientation_degrees": 11.9565582206995,
+      "orientation_strength": 0.36694937066820815,
+      "smoothness": 0.07472959685349068,
+      "flow": 0.046383885299547505,
+      "complexity": 0.9738446411012782,
+      "index": 9,
+      "chord": {
+        "degree": 2,
+        "symbol": "ii",
+        "pitches": [
+          57,
+          60,
+          64
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 69,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 69,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 66,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 72,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 68,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 69,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 76,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "10": {
+      "bounds": [
+        400,
+        294,
+        600,
+        441
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            68,
+            84,
+            80
+          ],
+          "hue": 165.0,
+          "saturation": 0.19047619047619047,
+          "brightness": 0.32941176470588235,
+          "lightness": 34.18190002441406,
+          "weight": 0.37890625
+        },
+        {
+          "rgb": [
+            140,
+            138,
+            91
+          ],
+          "hue": 57.55102040816324,
+          "saturation": 0.35000000000000003,
+          "brightness": 0.5490196078431373,
+          "lightness": 56.58395004272461,
+          "weight": 0.3779296875
+        },
+        {
+          "rgb": [
+            141,
+            167,
+            171
+          ],
+          "hue": 187.99999999999997,
+          "saturation": 0.17543859649122795,
+          "brightness": 0.6705882352941176,
+          "lightness": 66.57859802246094,
+          "weight": 0.2431640625
+        }
+      ],
+      "edge_density": 0.19906176122931443,
+      "long_contour_ratio": 0.5615423956643574,
+      "angularity": 0.8832781456953642,
+      "orientation_degrees": 0.7352165215006957,
+      "orientation_strength": 0.8825743031391552,
+      "smoothness": 0.11672185430463577,
+      "flow": 0.06554426969261126,
+      "complexity": 0.9560980749886494,
+      "index": 10,
+      "chord": {
+        "degree": 5,
+        "symbol": "V",
+        "pitches": [
+          62,
+          66,
+          69
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 74,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 74,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 74,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 74,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 74,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "11": {
+      "bounds": [
+        600,
+        294,
+        800,
+        441
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            71,
+            72,
+            46
+          ],
+          "hue": 62.3076923076923,
+          "saturation": 0.3611111111111111,
+          "brightness": 0.2823529411764706,
+          "lightness": 29.844411849975586,
+          "weight": 0.361572265625
+        },
+        {
+          "rgb": [
+            147,
+            138,
+            117
+          ],
+          "hue": 42.00000000000001,
+          "saturation": 0.2040816326530612,
+          "brightness": 0.5764705882352941,
+          "lightness": 57.78987503051758,
+          "weight": 0.34228515625
+        },
+        {
+          "rgb": [
+            156,
+            147,
+            63
+          ],
+          "hue": 54.193548387096754,
+          "saturation": 0.5961538461538461,
+          "brightness": 0.611764705882353,
+          "lightness": 60.25968551635742,
+          "weight": 0.296142578125
+        }
+      ],
+      "edge_density": 0.2602689125295508,
+      "long_contour_ratio": 0.5727618941761388,
+      "angularity": 0.904735982580294,
+      "orientation_degrees": 5.00762217164236,
+      "orientation_strength": 0.5714201556379702,
+      "smoothness": 0.09526401741970603,
+      "flow": 0.054563599064139504,
+      "complexity": 0.9666575939031029,
+      "index": 11,
+      "chord": {
+        "degree": 3,
+        "symbol": "iii",
+        "pitches": [
+          59,
+          62,
+          66
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 71,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 78,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 78,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 70,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 78,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "12": {
+      "bounds": [
+        0,
+        441,
+        200,
+        588
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            171,
+            155,
+            98
+          ],
+          "hue": 46.84931506849315,
+          "saturation": 0.42690058479532156,
+          "brightness": 0.6705882352941176,
+          "lightness": 64.20326232910156,
+          "weight": 0.390869140625
+        },
+        {
+          "rgb": [
+            45,
+            41,
+            25
+          ],
+          "hue": 48.0,
+          "saturation": 0.4444444444444445,
+          "brightness": 0.17647058823529413,
+          "lightness": 16.700424194335938,
+          "weight": 0.37890625
+        },
+        {
+          "rgb": [
+            99,
+            129,
+            152
+          ],
+          "hue": 206.0377358490566,
+          "saturation": 0.34868421052631576,
+          "brightness": 0.596078431372549,
+          "lightness": 52.42040252685547,
+          "weight": 0.230224609375
+        }
+      ],
+      "edge_density": 0.2868646572104019,
+      "long_contour_ratio": 0.6641690289056925,
+      "angularity": 0.9266180492251596,
+      "orientation_degrees": -5.4649072662953655,
+      "orientation_strength": 0.5425748175766084,
+      "smoothness": 0.07338195077484044,
+      "flow": 0.04873801898533111,
+      "complexity": 0.9743163172288059,
+      "index": 12,
+      "chord": {
+        "degree": 3,
+        "symbol": "iii",
+        "pitches": [
+          59,
+          62,
+          66
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 71,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 79,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 79,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 71,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 79,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "13": {
+      "bounds": [
+        200,
+        441,
+        400,
+        588
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            179,
+            185,
+            173
+          ],
+          "hue": 90.00000000000009,
+          "saturation": 0.06486486486486479,
+          "brightness": 0.7254901960784313,
+          "lightness": 74.47793579101562,
+          "weight": 0.451416015625
+        },
+        {
+          "rgb": [
+            183,
+            151,
+            69
+          ],
+          "hue": 43.15789473684211,
+          "saturation": 0.6229508196721312,
+          "brightness": 0.7176470588235294,
+          "lightness": 63.92906188964844,
+          "weight": 0.279052734375
+        },
+        {
+          "rgb": [
+            51,
+            48,
+            32
+          ],
+          "hue": 50.52631578947367,
+          "saturation": 0.3725490196078432,
+          "brightness": 0.2,
+          "lightness": 19.50872039794922,
+          "weight": 0.26953125
+        }
+      ],
+      "edge_density": 0.21073433806146571,
+      "long_contour_ratio": 0.6334790258392532,
+      "angularity": 0.9063973063973064,
+      "orientation_degrees": -22.60628468618492,
+      "orientation_strength": 0.4461042011927251,
+      "smoothness": 0.09360269360269358,
+      "flow": 0.059295343159364425,
+      "complexity": 0.9672390572390572,
+      "index": 13,
+      "chord": {
+        "degree": 1,
+        "symbol": "I",
+        "pitches": [
+          55,
+          59,
+          62
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 67,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 64,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 63,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 60,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 63,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 57,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 63,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 59,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 57,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 63,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 57,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 63,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 59,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 71,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "14": {
+      "bounds": [
+        400,
+        441,
+        600,
+        588
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            168,
+            194,
+            203
+          ],
+          "hue": 195.42857142857142,
+          "saturation": 0.17241379310344823,
+          "brightness": 0.796078431372549,
+          "lightness": 76.81600189208984,
+          "weight": 0.46923828125
+        },
+        {
+          "rgb": [
+            86,
+            133,
+            181
+          ],
+          "hue": 210.3157894736842,
+          "saturation": 0.5248618784530387,
+          "brightness": 0.7098039215686275,
+          "lightness": 54.15345764160156,
+          "weight": 0.3291015625
+        },
+        {
+          "rgb": [
+            74,
+            100,
+            115
+          ],
+          "hue": 201.95121951219514,
+          "saturation": 0.3565217391304347,
+          "brightness": 0.45098039215686275,
+          "lightness": 40.9221305847168,
+          "weight": 0.20166015625
+        }
+      ],
+      "edge_density": 0.037529550827423167,
+      "long_contour_ratio": 0.6316452949440783,
+      "angularity": 0.8121827411167513,
+      "orientation_degrees": -1.6365770416167182,
+      "orientation_strength": 1.0,
+      "smoothness": 0.18781725888324874,
+      "flow": 0.11863388788289796,
+      "complexity": 0.4062349995799882,
+      "index": 14,
+      "chord": {
+        "degree": 6,
+        "symbol": "vi",
+        "pitches": [
+          64,
+          67,
+          71
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 76,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 74,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 1.0,
+          "duration": 0.48,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 74,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 66,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 76,
+          "start": 3.0,
+          "duration": 0.48,
+          "velocity": 74,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    },
+    "15": {
+      "bounds": [
+        600,
+        441,
+        800,
+        588
+      ],
+      "dominant_colors": [
+        {
+          "rgb": [
+            41,
+            46,
+            42
+          ],
+          "hue": 131.99999999999994,
+          "saturation": 0.10869565217391297,
+          "brightness": 0.1803921568627451,
+          "lightness": 18.359880447387695,
+          "weight": 0.538818359375
+        },
+        {
+          "rgb": [
+            89,
+            121,
+            155
+          ],
+          "hue": 210.90909090909093,
+          "saturation": 0.4258064516129032,
+          "brightness": 0.6078431372549019,
+          "lightness": 49.81885528564453,
+          "weight": 0.352294921875
+        },
+        {
+          "rgb": [
+            167,
+            170,
+            138
+          ],
+          "hue": 65.62499999999997,
+          "saturation": 0.18823529411764706,
+          "brightness": 0.6666666666666666,
+          "lightness": 68.64566040039062,
+          "weight": 0.10888671875
+        }
+      ],
+      "edge_density": 0.11506353427895981,
+      "long_contour_ratio": 0.5247981350790156,
+      "angularity": 0.902542372881356,
+      "orientation_degrees": -0.07113272716798034,
+      "orientation_strength": 0.9294385026314523,
+      "smoothness": 0.09745762711864403,
+      "flow": 0.05114558096109049,
+      "complexity": 0.6898463169150939,
+      "index": 15,
+      "chord": {
+        "degree": 1,
+        "symbol": "I",
+        "pitches": [
+          55,
+          59,
+          62
+        ]
+      },
+      "notes": [
+        {
+          "pitch": 67,
+          "start": 0.0,
+          "duration": 0.24,
+          "velocity": 72,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 0.5,
+          "duration": 0.24,
+          "velocity": 64,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 1.0,
+          "duration": 0.24,
+          "velocity": 64,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 1.5,
+          "duration": 0.24,
+          "velocity": 64,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 2.0,
+          "duration": 0.24,
+          "velocity": 72,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 2.5,
+          "duration": 0.24,
+          "velocity": 64,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 3.0,
+          "duration": 0.24,
+          "velocity": 64,
+          "articulation": "staccato"
+        },
+        {
+          "pitch": 67,
+          "start": 3.5,
+          "duration": 0.24,
+          "velocity": 72,
+          "articulation": "staccato"
+        }
+      ],
+      "tempo": 107,
+      "beats": 4
+    }
+  }
+}

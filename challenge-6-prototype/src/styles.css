@@ -220,6 +220,22 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--lime); out
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+.measured-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-top: 2px;
+}
+.measured-features span {
+  padding: 3px 5px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.025);
+  font-family: "Cascadia Code", monospace;
+  font-size: 8px;
+}
+.measured-features span:first-child { color: var(--lime); border-color: rgba(236, 255, 122, 0.2); }
 .motif-family {
   justify-self: start;
   padding: 3px 7px;

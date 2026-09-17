@@ -34,7 +34,9 @@ interface CompositionTrack {
 
 const LOOK_AHEAD_SECONDS = 0.12;
 const SCHEDULER_INTERVAL_MS = 25;
-const MASTER_LEVEL = 0.58;
+// The browser engine remains as a timing/MIDI fallback, but must never produce
+// presentation audio. All audible output is expected to come from CHORDCAT.
+const MASTER_LEVEL = 0;
 
 function baseLevelForRole(role: ArtworkRegion['musicalRole']): number {
   switch (role) {
@@ -218,7 +220,12 @@ export class ObjectSoundEngine {
     if (!this.ctx || !this.masterGain) return;
     this.stopRegionSound(region.id, 80);
     const notes = region.midiNotes.length ? region.midiNotes : [60, 64, 67, 71];
-    if (!region.semanticMotif) this.sendMidiChord(region.id, region.chordcatTrack, notes, 95);
+    const accompaniment = region.semanticMotif?.accompaniment;
+    if (accompaniment?.length) {
+      this.sendMidiChord(region.id, region.chordcatTrack, accompaniment, 44);
+    } else if (!region.semanticMotif) {
+      this.sendMidiChord(region.id, region.chordcatTrack, notes, 95);
+    }
     const voice = this.createPolyphonicChordVoice(region, notes);
     this.activeRegionVoices.set(region.id, voice);
   }
@@ -523,19 +530,37 @@ export class ObjectSoundEngine {
       let step = 0;
       const motif = region.semanticMotif;
       const stepMs = (60_000 / this.performanceTempo) * motif.stepBeats;
+      const velocity = motif.velocity ?? 96;
+      const normalizedVelocity = Math.max(1, Math.min(127, velocity)) / 127;
+
+      if (motif.accompaniment?.length) {
+        const accompanimentGain = ctx.createGain();
+        accompanimentGain.gain.value = 0.075;
+        accompanimentGain.connect(voiceGain);
+        motif.accompaniment.forEach((note) => {
+          const oscillator = ctx.createOscillator();
+          oscillator.type = 'sine';
+          oscillator.frequency.value = midiToFreq(note);
+          oscillator.connect(accompanimentGain);
+          oscillator.start();
+          oscillators.push(oscillator);
+        });
+      }
+
       const playStep = () => {
         const note = motif.steps[step % motif.steps.length];
         step += 1;
         if (note === null) return;
 
         const durationSeconds = Math.max(0.08, (stepMs * motif.gate) / 1000);
+        const peak = 0.16 + normalizedVelocity * 0.2;
         const oscillator = ctx.createOscillator();
         const envelope = ctx.createGain();
         oscillator.type = motif.waveform;
         oscillator.frequency.value = midiToFreq(note);
         envelope.gain.setValueAtTime(0.0001, ctx.currentTime);
-        envelope.gain.exponentialRampToValueAtTime(0.32, ctx.currentTime + 0.025);
-        envelope.gain.setValueAtTime(0.24, ctx.currentTime + Math.max(0.04, durationSeconds - 0.1));
+        envelope.gain.exponentialRampToValueAtTime(peak, ctx.currentTime + 0.025);
+        envelope.gain.setValueAtTime(peak * 0.75, ctx.currentTime + Math.max(0.04, durationSeconds - 0.1));
         envelope.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSeconds);
         oscillator.connect(envelope);
         envelope.connect(voiceGain);
@@ -545,7 +570,7 @@ export class ObjectSoundEngine {
           oscillator.disconnect();
           envelope.disconnect();
         };
-        this.sendMidiPulse(region.chordcatTrack, note, 96, durationSeconds * 1000);
+        this.sendMidiPulse(region.chordcatTrack, note, velocity, durationSeconds * 1000);
       };
       playStep();
       const timer = window.setInterval(() => {
