@@ -28,6 +28,8 @@ The browser's synthesized output is muted (`MASTER_LEVEL = 0`), so the app is si
 
 CHORDCAT's sixteen inputs correspond to artwork cells in row-major order: 1–4 on the top row, 13–16 on the bottom row. In the facilitator console, run full calibration and press each physical input when prompted. The browser learns the MIDI input channel from the first complete chord, groups each press into a signature, then saves the channel and sixteen signatures in local storage. Recalibrate after changing the selected CHORDCAT track, project, transpose, or chord set. Unknown signatures do not select a cell.
 
+If calibration is disabled, read the MIDI access message in the facilitator console. The app automatically chooses a port named CHORDCAT/AlphaTheta or the only available MIDI input. When several inputs exist, select the CHORDCAT input from the dropdown. **Retry MIDI access** requests browser permission again after connecting the device or changing permissions. On Ubuntu with Firefox, connect CHORDCAT before starting Firefox and accept its site-specific MIDI permission prompt; if the port list remains empty, restart Firefox or test the same HTTPS URL in Chrome/Chromium. Browser MIDI permission and saved calibration belong to that specific browser and site URL.
+
 In the shared `aseqdump` capture, `20:0` is the ALSA port and `Note on 5` is zero-based MIDI Channel 6. Those messages confirm the pads send chords to the computer; they do not establish that computer-to-CHORDCAT notes play through its internal sound engine. The C4 sound check above remains the first hardware gate.
 
 ## Experiences

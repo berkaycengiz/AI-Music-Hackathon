@@ -107,8 +107,8 @@ export default function App() {
   }, []);
 
   const startExperience = useCallback(async () => {
-    await soundEngine.current.initialize();
     soundEngine.current.onMidiStateChange = () => setMidiVersion((version) => version + 1);
+    await soundEngine.current.initialize();
     setAppState('exploring');
   }, []);
 
@@ -365,8 +365,13 @@ export default function App() {
             midiDeviceName={soundEngine.current.midiDeviceName}
             isMidiConnected={soundEngine.current.isMidiConnected}
             midiPorts={soundEngine.current.getMidiPorts()}
+            midiInputPorts={soundEngine.current.getMidiInputPorts()}
+            midiInputId={soundEngine.current.midiInputId}
+            midiStatusMessage={soundEngine.current.midiStatusMessage}
             chordcatInput={soundEngine.current.chordcatInputState}
             onSelectMidiPort={(id) => soundEngine.current.selectMidiPortById(id)}
+            onSelectMidiInput={(id) => soundEngine.current.selectMidiInputById(id)}
+            onRetryMidiAccess={() => { void soundEngine.current.retryMidiAccess(); }}
             onFullCalibration={() => soundEngine.current.beginFullChordcatCalibration()}
             onTestMidiNote={() => soundEngine.current.testMidiNote()}
             onTestTrack={(track) => soundEngine.current.testTrack(track)}

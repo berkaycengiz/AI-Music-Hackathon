@@ -24,8 +24,13 @@ interface Props {
   midiDeviceName?: string;
   isMidiConnected?: boolean;
   midiPorts?: { id: string; name: string }[];
+  midiInputPorts?: { id: string; name: string }[];
+  midiInputId?: string;
+  midiStatusMessage?: string;
   chordcatInput: ChordcatInputSnapshot;
   onSelectMidiPort?: (id: string) => void;
+  onSelectMidiInput?: (id: string) => void;
+  onRetryMidiAccess?: () => void;
   onFullCalibration: () => void;
   onTestMidiNote?: () => void;
   onTestTrack?: (trackNum: number) => void;
@@ -53,8 +58,13 @@ export function DebugPanel({
   midiDeviceName,
   isMidiConnected,
   midiPorts = [],
+  midiInputPorts = [],
+  midiInputId = '',
+  midiStatusMessage,
   chordcatInput,
   onSelectMidiPort,
+  onSelectMidiInput,
+  onRetryMidiAccess,
   onFullCalibration,
   onTestMidiNote,
   onTestTrack,
@@ -230,7 +240,23 @@ export function DebugPanel({
           <span className="debug-label">Protocol</span>
           <span className="debug-value">Input Ch {chordcatInput.inputChannel ?? '—'} · Melody Ch 6</span>
           <span className="debug-label">Input</span>
-          <span className="debug-value">{chordcatInput.inputName}</span>
+          <span className="debug-value">
+            {midiInputPorts.length > 1 ? (
+              <select
+                className="midi-port-select"
+                value={midiInputId}
+                onChange={(event) => onSelectMidiInput?.(event.target.value)}
+                aria-label="CHORDCAT MIDI input"
+              >
+                {!midiInputId && <option value="">Select MIDI input</option>}
+                {midiInputPorts.map((port) => <option key={port.id} value={port.id}>{port.name}</option>)}
+              </select>
+            ) : chordcatInput.inputName}
+          </span>
+        </div>
+        <div className="midi-access-status" aria-live="polite">
+          <span>{midiStatusMessage}</span>
+          <button onClick={onRetryMidiAccess}>Retry MIDI access</button>
         </div>
 
         <div className="midi-smoke-test">

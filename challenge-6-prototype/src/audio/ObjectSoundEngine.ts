@@ -78,6 +78,9 @@ export class ObjectSoundEngine {
 
   private midiOutput: any = null;
   private midiAccess: any = null;
+  private selectedMidiInputId = '';
+  private midiRequest: Promise<void> | null = null;
+  private midiStatus = 'Begin exploration to request browser MIDI access.';
   private lastMidiExpression = new Map<number, number>();
   private chordcatInput = new ChordcatInput();
 
@@ -107,7 +110,7 @@ export class ObjectSoundEngine {
     this.masterFilter.connect(this.ctx.destination);
 
     if (this.ctx.state === 'suspended') await this.ctx.resume();
-    void this.initMidi();
+    void this.retryMidiAccess();
     this.initialized = true;
   }
 
@@ -131,6 +134,14 @@ export class ObjectSoundEngine {
     return this.midiOutput?.id || '';
   }
 
+  get midiInputId(): string {
+    return this.selectedMidiInputId;
+  }
+
+  get midiStatusMessage(): string {
+    return this.midiStatus;
+  }
+
   get chordcatInputState(): ChordcatInputSnapshot {
     return this.chordcatInput.state;
   }
@@ -141,10 +152,31 @@ export class ObjectSoundEngine {
 
   getMidiPorts(): { id: string; name: string }[] {
     if (!this.midiAccess) return [];
-    return Array.from(this.midiAccess.outputs.values()).map((output: any) => ({
-      id: output.id,
-      name: output.name || 'Unknown MIDI Output',
-    }));
+    return Array.from(this.midiAccess.outputs.values())
+      .filter((output: any) => output.state !== 'disconnected')
+      .map((output: any) => ({
+        id: output.id,
+        name: output.name || 'Unknown MIDI Output',
+      }));
+  }
+
+  getMidiInputPorts(): { id: string; name: string }[] {
+    if (!this.midiAccess) return [];
+    return Array.from(this.midiAccess.inputs.values())
+      .filter((input: any) => input.state !== 'disconnected')
+      .map((input: any) => ({
+        id: input.id,
+        name: input.name || 'Unknown MIDI Input',
+      }));
+  }
+
+  selectMidiInputById(id: string): void {
+    if (!this.midiAccess) return;
+    const input = this.midiAccess.inputs.get(id);
+    if (!input || input.state === 'disconnected') return;
+    this.selectedMidiInputId = id;
+    this.chordcatInput.connect(input);
+    this.onMidiStateChange?.();
   }
 
   selectMidiPortById(id: string): void {
@@ -157,26 +189,55 @@ export class ObjectSoundEngine {
     this.onMidiStateChange?.();
   }
 
+  retryMidiAccess(): Promise<void> {
+    if (this.midiRequest) return this.midiRequest;
+    this.midiRequest = this.initMidi().finally(() => { this.midiRequest = null; });
+    return this.midiRequest;
+  }
+
   private async initMidi(): Promise<void> {
-    if (typeof navigator === 'undefined' || !('requestMIDIAccess' in navigator)) return;
+    if (typeof navigator === 'undefined' || !('requestMIDIAccess' in navigator)) {
+      this.midiStatus = 'This browser does not expose Web MIDI. Open the HTTPS site in Chrome or Chromium.';
+      this.onMidiStateChange?.();
+      return;
+    }
+    this.midiStatus = 'Requesting browser MIDI access…';
+    this.onMidiStateChange?.();
     try {
       const access = await (navigator as any).requestMIDIAccess();
       this.midiAccess = access;
       this.selectMidiPort();
       this.selectMidiInput();
+      this.updateMidiStatus();
       access.onstatechange = () => {
         this.selectMidiPort();
         this.selectMidiInput();
+        this.updateMidiStatus();
         this.onMidiStateChange?.();
       };
-    } catch {
-      console.info('MIDI access unavailable; CHORDCAT audio will remain silent.');
+    } catch (error) {
+      this.midiStatus = `MIDI access failed: ${error instanceof Error ? error.message : String(error)}. Check browser MIDI permission, then retry.`;
+      this.onMidiStateChange?.();
     }
+  }
+
+  private updateMidiStatus(): void {
+    const inputCount = this.getMidiInputPorts().length;
+    const outputCount = this.getMidiPorts().length;
+    if (!inputCount && !outputCount) {
+      this.midiStatus = 'MIDI permission granted, but the browser sees no MIDI ports. Connect CHORDCAT and retry; in Firefox, restart the browser with CHORDCAT connected.';
+    } else if (!inputCount) {
+      this.midiStatus = `Browser sees ${outputCount} MIDI output(s), but no input. Connect CHORDCAT and retry MIDI access.`;
+    } else {
+      this.midiStatus = `Browser sees ${inputCount} MIDI input(s) and ${outputCount} output(s).${inputCount > 1 && !this.selectedMidiInputId ? ' Select the CHORDCAT input below.' : ''}`;
+    }
+    this.onMidiStateChange?.();
   }
 
   private selectMidiPort(): void {
     if (!this.midiAccess) return;
-    const outputs = Array.from(this.midiAccess.outputs.values()) as any[];
+    const outputs = (Array.from(this.midiAccess.outputs.values()) as any[])
+      .filter((output) => output.state !== 'disconnected');
     if (outputs.length === 0) {
       this.midiOutput = null;
       this.onMidiStateChange?.();
@@ -186,7 +247,7 @@ export class ObjectSoundEngine {
       const name = (output.name || '').toLowerCase();
       return name.includes('chordcat') || name.includes('alphatheta');
     });
-    this.midiOutput = chordcat || outputs[0];
+    this.midiOutput = outputs.find((output) => output.id === this.midiOutput?.id) || chordcat || outputs[0];
     this.lastMidiExpression.clear();
     this.onMidiStateChange?.();
   }
@@ -199,7 +260,11 @@ export class ObjectSoundEngine {
       const name = (input.name || '').toLowerCase();
       return name.includes('chordcat') || name.includes('alphatheta');
     });
-    this.chordcatInput.connect(chordcat || null);
+    const selected = inputs.find((input) => input.id === this.selectedMidiInputId)
+      || chordcat
+      || (inputs.length === 1 ? inputs[0] : null);
+    this.selectedMidiInputId = selected?.id || '';
+    this.chordcatInput.connect(selected);
   }
 
   startMode(mode: ExperienceMode, artwork: ArtworkDefinition): void {

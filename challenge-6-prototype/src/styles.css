@@ -277,6 +277,8 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--lime); out
 .spoken-cue-text { margin-top: 8px; color: #b9b8b2; font-family: Georgia, serif; font-size: 11px; line-height: 1.45; }
 
 .midi-port-select { width: 100%; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink-2); border-radius: 5px; padding: 4px; font-size: 9px; }
+.midi-access-status { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; color: var(--ink-2); font-size: 10px; line-height: 1.5; }
+.midi-access-status button { flex: none; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 5px; padding: 6px 8px; font: inherit; cursor: pointer; }
 .calibration-card { margin-top: 11px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: #0c0f13; }
 .calibration-card.ready { border-color: rgba(111, 229, 205, 0.25); background: rgba(111, 229, 205, 0.035); }
 .calibration-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
