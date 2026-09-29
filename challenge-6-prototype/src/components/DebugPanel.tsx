@@ -228,7 +228,7 @@ export function DebugPanel({
             ) : midiDeviceName}
           </span>
           <span className="debug-label">Protocol</span>
-          <span className="debug-value">Input Ch 2 · Melody Ch 6</span>
+          <span className="debug-value">Input Ch {chordcatInput.inputChannel ?? '—'} · Melody Ch 6</span>
           <span className="debug-label">Input</span>
           <span className="debug-value">{chordcatInput.inputName}</span>
         </div>

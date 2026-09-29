@@ -26,7 +26,9 @@ The browser's synthesized output is muted (`MASTER_LEVEL = 0`), so the app is si
 
 ## Calibrate the physical grid
 
-CHORDCAT's sixteen inputs correspond to artwork cells in row-major order: 1–4 on the top row, 13–16 on the bottom row. In the facilitator console, run full calibration and press each physical input when prompted. The browser groups incoming Channel 2 chord notes into one signature per press, then saves the sixteen signatures in local storage. Recalibrate after changing the CHORDCAT project, transpose, or chord set. Unknown signatures do not select a cell.
+CHORDCAT's sixteen inputs correspond to artwork cells in row-major order: 1–4 on the top row, 13–16 on the bottom row. In the facilitator console, run full calibration and press each physical input when prompted. The browser learns the MIDI input channel from the first complete chord, groups each press into a signature, then saves the channel and sixteen signatures in local storage. Recalibrate after changing the selected CHORDCAT track, project, transpose, or chord set. Unknown signatures do not select a cell.
+
+In the shared `aseqdump` capture, `20:0` is the ALSA port and `Note on 5` is zero-based MIDI Channel 6. Those messages confirm the pads send chords to the computer; they do not establish that computer-to-CHORDCAT notes play through its internal sound engine. The C4 sound check above remains the first hardware gate.
 
 ## Experiences
 
