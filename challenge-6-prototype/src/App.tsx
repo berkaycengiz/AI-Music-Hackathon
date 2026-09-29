@@ -28,7 +28,7 @@ const MODE_COPY: Record<ExperienceMode, { label: string; short: string }> = {
   },
   'full-composition': {
     label: 'Full Composition',
-    short: 'Distance from each musical center continuously blends every stem.',
+    short: 'Experimental visual comparison. It does not send playable MIDI notes and remains silent with browser audio muted.',
   },
 };
 
@@ -62,6 +62,7 @@ export default function App() {
 
   const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [showFacilitator, setShowFacilitator] = useState(false);
   const [, setMidiVersion] = useState(0);
 
   const soundEngine = useRef(new ObjectSoundEngine());
@@ -242,16 +243,85 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKey);
   }, [handleStopAll]);
 
+  const activeRegion = interactionRegions.find((region) => region.id === activeRegionId) ?? null;
+  const activeCellParts = activeRegion && experienceMode === 'region-chords'
+    ? activeRegion.label.split(' · ')
+    : null;
+
   return (
     <div className="app-shell">
-      <header className="app-header">
-        <div className="brand-block">
-          <h1 className="app-title">Museum Sonic Explorer</h1>
-          <span className="app-badge">CHORDCAT-ready</span>
-        </div>
+      <header className="gallery-header">
+        <span className="gallery-brand">Museum Sonic Explorer</span>
+        <span className="gallery-header-note">A study in sound · No. {String(Object.keys(artworks).indexOf(selectedArtworkKey) + 1).padStart(2, '0')}</span>
+        <button
+          className="facilitator-toggle"
+          aria-controls="facilitator-console"
+          aria-expanded={showFacilitator}
+          onClick={() => setShowFacilitator((visible) => !visible)}
+        >
+          {showFacilitator ? 'Close facilitator console' : 'Facilitator setup'}
+        </button>
+      </header>
 
-        <div className="header-center">
-          <div className="artwork-selector-wrap">
+      <main className={`app-main ${showFacilitator ? 'facilitator-open' : ''}`}>
+        <section className="visitor-area" aria-label="Artwork exploration">
+          <div className="visitor-intro">
+            <span className="gallery-eyebrow">An accessible image experience</span>
+            <h1>A painting <em>you can play.</em></h1>
+            <p>Explore {ARTWORK_GRID_CELL_COUNT} areas of an artwork and hear them become variations of one musical piece.</p>
+          </div>
+          <div className="artwork-heading">
+            <div>
+              <span className="gallery-eyebrow">Now exploring</span>
+              <h2>{currentArtwork.title}</h2>
+            </div>
+            <span className="artwork-count">
+              {String(Object.keys(artworks).indexOf(selectedArtworkKey) + 1).padStart(2, '0')} / {String(Object.keys(artworks).length).padStart(2, '0')}
+            </span>
+          </div>
+          <div className="artwork-frame">
+            <div className="canvas-area">
+              <ArtworkCanvas
+                artwork={currentArtwork}
+                mode={experienceMode}
+                trackMix={trackMix}
+                activeRegionId={activeRegionId}
+                candidateRegionId={candidateRegionId}
+                mousePos={mousePos}
+                selectedGridCell={selectedGridCell}
+                onMouseMove={handlePointerInput}
+                disabled={appState !== 'exploring'}
+              />
+            </div>
+          </div>
+
+          <div className="exploration-bar">
+            <div>
+              <span className="gallery-eyebrow">The performance</span>
+              <p className="exploration-state" aria-live="polite">
+                {appState === 'exploring' ? 'Explore the painting' : 'Ready when you are'}
+              </p>
+            </div>
+            <button className="start-btn" onClick={appState === 'exploring' ? handleStopAll : startExperience}>
+              {appState === 'exploring' ? 'Stop exploration' : 'Begin exploration'}
+            </button>
+          </div>
+
+          <div className="cell-story" aria-live="polite">
+            <span className="cell-story-number">
+              {activeCellParts?.[0] || '01 — 16'}
+            </span>
+            <div>
+              <span className="gallery-eyebrow">{activeRegion ? 'Selected area' : 'Sixteen areas · one composition'}</span>
+              <h3>{activeCellParts?.slice(1).join(' · ') || activeRegion?.label || 'Explore the artwork'}</h3>
+              <p>{activeRegion?.semanticMotif?.visualMeaning || currentArtwork.moodDescription || 'Touch a cell on the instrument or move across the artwork to begin.'}</p>
+            </div>
+          </div>
+          <p className="visitor-note">The mouse previews the same sixteen areas during development. Music is played by the connected instrument.</p>
+        </section>
+
+        {showFacilitator && <aside id="facilitator-console" className="debug-area" aria-label="Facilitator console">
+          <div className="facilitator-controls">
             <label htmlFor="artwork-select" className="selector-label">Artwork</label>
             <select
               id="artwork-select"
@@ -263,88 +333,22 @@ export default function App() {
                 <option key={key} value={key}>{artwork.title}</option>
               ))}
             </select>
-          </div>
-
-          <div className="mode-switch" role="group" aria-label="Musical interpretation">
-            {(Object.keys(MODE_COPY) as ExperienceMode[]).map((mode) => (
-              <button
-                key={mode}
-                className={`mode-button ${experienceMode === mode ? 'active' : ''}`}
-                aria-pressed={experienceMode === mode}
-                onClick={() => handleModeChange(mode)}
-              >
-                <span className="mode-dot" />
-                {MODE_COPY[mode].label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="header-right">
-          <button
-            className={`header-narration-btn ${isNarrationEnabled ? 'active' : 'muted'}`}
-            onClick={() => setIsNarrationEnabled(narration.current.toggle())}
-            title="Toggle English voice narration"
-          >
-            {isNarrationEnabled ? 'Voice on' : 'Voice off'}
-          </button>
-          <span className={`status-pill ${appState}`}>
-            {appState === 'idle' ? '● Ready' : '● Exploring'}
-          </span>
-          {appState === 'exploring' && (
-            <button className="header-stop-btn" onClick={handleStopAll}>■ Stop</button>
-          )}
-        </div>
-      </header>
-
-      <div className="mode-story" aria-live="polite">
-        <span className="mode-story-label">{MODE_COPY[experienceMode].label}</span>
-        <span>{MODE_COPY[experienceMode].short}</span>
-        {experienceMode === 'full-composition' && (
-          <span className="transport-status">● {currentArtwork.tempo} BPM · continuous transport</span>
-        )}
-      </div>
-
-      <main className="app-main">
-        {appState === 'idle' && (
-          <div className="start-overlay">
-            <div className="start-card">
-              <span className="eyebrow">Performative tactile exploration</span>
-              <h2>Play the painting.</h2>
-              <p>
-                Move across the artwork to reveal its spatial story through narration,
-                harmony and an adaptive instrumental mix.
-              </p>
-              <p className="start-desc">{currentArtwork.moodDescription}</p>
-              <div className="start-meta-grid">
-                <span>
-                  <strong>{experienceMode === 'region-chords' ? ARTWORK_GRID_CELL_COUNT : currentArtwork.regions.length}</strong>
-                  {experienceMode === 'region-chords' ? ' cells' : ' regions'}
-                </span>
-                <span><strong>{currentArtwork.keyRoot} {currentArtwork.scale}</strong> score</span>
-                <span><strong>{currentArtwork.tempo}</strong> BPM</span>
-              </div>
-              <button className="start-btn" onClick={startExperience}>Begin exploration</button>
-              <p className="start-hint">Mouse input currently simulates a fingertip on the tactile relief.</p>
+            <span className="selector-label">Experience</span>
+            <div className="mode-switch" role="group" aria-label="Musical interpretation">
+              {(Object.keys(MODE_COPY) as ExperienceMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  className={`mode-button ${experienceMode === mode ? 'active' : ''}`}
+                  aria-pressed={experienceMode === mode}
+                  onClick={() => handleModeChange(mode)}
+                >
+                  {MODE_COPY[mode].label}
+                </button>
+              ))}
             </div>
+            <p className="facilitator-mode-note">{MODE_COPY[experienceMode].short}</p>
+            {appState === 'idle' && <p className="facilitator-mode-note">Begin exploration to request MIDI access and connect the instrument.</p>}
           </div>
-        )}
-
-        <div className="canvas-area">
-          <ArtworkCanvas
-            artwork={currentArtwork}
-            mode={experienceMode}
-            trackMix={trackMix}
-            activeRegionId={activeRegionId}
-            candidateRegionId={candidateRegionId}
-            mousePos={mousePos}
-            selectedGridCell={selectedGridCell}
-            onMouseMove={handlePointerInput}
-            disabled={appState !== 'exploring'}
-          />
-        </div>
-
-        <aside className="debug-area">
           <DebugPanel
             artwork={interactionArtwork}
             mode={experienceMode}
@@ -364,6 +368,7 @@ export default function App() {
             chordcatInput={soundEngine.current.chordcatInputState}
             onSelectMidiPort={(id) => soundEngine.current.selectMidiPortById(id)}
             onFullCalibration={() => soundEngine.current.beginFullChordcatCalibration()}
+            onTestMidiNote={() => soundEngine.current.testMidiNote()}
             onTestTrack={(track) => soundEngine.current.testTrack(track)}
             isNarrationEnabled={isNarrationEnabled}
             onToggleNarration={() => setIsNarrationEnabled(narration.current.toggle())}
@@ -372,7 +377,7 @@ export default function App() {
             onStopAll={handleStopAll}
             onTriggerRegion={handleTriggerRegion}
           />
-        </aside>
+        </aside>}
       </main>
     </div>
   );

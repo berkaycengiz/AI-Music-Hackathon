@@ -34,8 +34,7 @@ interface CompositionTrack {
 
 const LOOK_AHEAD_SECONDS = 0.12;
 const SCHEDULER_INTERVAL_MS = 25;
-// The browser engine remains as a timing/MIDI fallback, but must never produce
-// presentation audio. All audible output is expected to come from CHORDCAT.
+// Browser synthesis remains for timing, but presentation audio comes from CHORDCAT.
 const MASTER_LEVEL = 0;
 
 function baseLevelForRole(role: ArtworkRegion['musicalRole']): number {
@@ -125,7 +124,7 @@ export class ObjectSoundEngine {
   }
 
   get midiDeviceName(): string {
-    return this.midiOutput?.name || 'Browser Composition Engine';
+    return this.midiOutput?.name || 'No MIDI output selected';
   }
 
   get midiDeviceId(): string {
@@ -171,7 +170,7 @@ export class ObjectSoundEngine {
         this.onMidiStateChange?.();
       };
     } catch {
-      console.info('MIDI access unavailable — using the browser composition engine.');
+      console.info('MIDI access unavailable; CHORDCAT audio will remain silent.');
     }
   }
 
@@ -493,6 +492,10 @@ export class ObjectSoundEngine {
     return this.activeRegionVoices.has(regionId);
   }
 
+  testMidiNote(): void {
+    this.sendMidiPulse(6, 60, 100, 1000);
+  }
+
   testTrack(trackNumber: number): void {
     const sourceRegion = this.compositionArtwork?.regions.find(
       (region) => region.chordcatTrack === trackNumber,
@@ -647,7 +650,7 @@ export class ObjectSoundEngine {
       this.midiOutput.send([0x90 + channel, note, velocity]);
       this.midiOutput.send([0x80 + channel, note, 0], window.performance.now() + durationMs);
     } catch {
-      // The browser voice remains the reliable prototype fallback.
+      // MIDI output may disappear while a note is being scheduled.
     }
   }
 
@@ -660,7 +663,7 @@ export class ObjectSoundEngine {
       this.midiOutput.send([0xb0 + channel, 11, value]);
       this.lastMidiExpression.set(channel, value);
     } catch {
-      // Browser mix remains active if hardware disappears mid-session.
+      // The MIDI output may disappear mid-session.
     }
   }
 }

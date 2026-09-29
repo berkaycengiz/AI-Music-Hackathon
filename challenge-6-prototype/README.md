@@ -1,18 +1,6 @@
-# Challenge 6 — Museum Sonic Explorer
+﻿# Museum Sonic Explorer
 
-An accessible tactile-music installation prototype for Challenge 6. A visitor explores a relief reproduction of a painting and performs its musical interpretation through position, dwell, and movement. The screen uses the mouse as a temporary fingertip simulator; the installation target is the tactile surface plus CHORDCAT.
-
-## Two experiences to compare
-
-### 4×4 Melodies (default)
-
-The artwork is divided into sixteen numbered cells matching CHORDCAT's sixteen calibrated keys. **The Kiss** is the first fully curator-authored example: every cell has a visual meaning, one of four motif families (atmosphere, geometry, human, nature), and its own quantized melody. Other artworks temporarily fall back to spatial variations of their closest curated theme. Mouse input and CHORDCAT input share the same cell order.
-
-### Full Composition
-
-Each artwork has one continuous, deterministic score. Every semantic region owns a musical center and stem. Proximity continuously blends all stems between their role-specific 10–18% minimum and full focus, while the complete composition keeps playing. Position never becomes a literal object sound effect.
-
-Both modes share the same artwork data, narration, color-driven timbre, dwell protection, and facilitator controls. The default mode uses a fixed 4×4 grid; Full Composition preserves continuous center-distance mixing.
+A painting becomes a sixteen-cell musical surface. This prototype keeps artwork data, CHORDCAT input calibration, and MIDI sequencing in the browser. The visitor sees a simple gallery view inspired by the Synesthesias pitch design; artwork selection, calibration, routing, and diagnostics live in the facilitator console. There is no backend service.
 
 ## Run locally
 
@@ -21,33 +9,42 @@ npm install
 npm run dev
 ```
 
-Open the Vite URL, choose an artwork and experience, then select **Begin exploration**. In 4×4 Melodies, move across the numbered cells or use the corresponding calibrated CHORDCAT keys. Press Escape or use **Stop all sound** for an immediate audio and MIDI panic.
+Open the Vite URL in Chrome or Edge. Select **Facilitator setup** to choose an artwork or inspect hardware controls. **Begin exploration** requests MIDI access. The mouse simulates the same sixteen artwork cells during development.
 
-## Prototype interaction
+## CHORDCAT sound check
 
-- 4×4 Melodies displays sixteen numbered cells and clearly highlights the selected cell.
-- The Kiss exposes its visual-to-musical reasoning live in the facilitator panel.
-- Full Composition displays the original musical centers and smooth stem mixing without grid lines.
-- A 140 ms dwell prevents accidental boundary triggers without requiring continued pointer movement.
-- Overlap priority and hysteresis keep region changes stable.
-- Text-to-speech names and describes the region; narration briefly ducks the score.
-- Brightness and warmth sampled from the clean source image continuously shape filter and expression.
-- The facilitator console exposes lifecycle, dwell, active region, sampled color, live stem levels, MIDI routing, and test controls.
+Use this sequence before evaluating the artwork interaction:
 
-## CHORDCAT architecture
+1. Connect CHORDCAT over USB and plug headphones or speakers into CHORDCAT's audio output.
+2. Set Track 6 to receive USB MIDI Channel 6 and choose an audible instrument preset on that track.
+3. In Chrome or Edge, open the app over HTTPS (or localhost), select **Begin exploration**, and allow MIDI access.
+4. Open **Facilitator setup**. Select the CHORDCAT MIDI output (previously seen as `Chordcat 1`).
+5. Press **Send C4 to Track 6**. It sends MIDI Note On for middle C on Channel 6, then Note Off one second later.
+6. Confirm that the note is heard from CHORDCAT's audio output. Only then test the 4×4 melodies and the sixteen-key calibration.
 
-CHORDCAT is the eventual sound engine **and** physical controller, not the user-facing product. In the installation, its tracks hold the curated artwork arrangement while the web layer maps the sixteen physical keys to artwork cells. The current bridge sends note messages in 4×4 Melodies and a prototype CC11 expression map in Full Composition. Track-level expression must be validated on the physical unit before the demo mapping is frozen.
+The browser's synthesized output is muted (`MASTER_LEVEL = 0`), so the app is silent without a working CHORDCAT sound route. Selecting a MIDI output means the port is available; it does **not** prove that CHORDCAT received the note or played audio. This final hardware path has not yet been verified.
 
-Browser audio is a deterministic rehearsal fallback so the complete interaction can be developed without hardware. It does not claim to reproduce CHORDCAT's internal sound library.
+## Calibrate the physical grid
+
+CHORDCAT's sixteen inputs correspond to artwork cells in row-major order: 1–4 on the top row, 13–16 on the bottom row. In the facilitator console, run full calibration and press each physical input when prompted. The browser groups incoming Channel 2 chord notes into one signature per press, then saves the sixteen signatures in local storage. Recalibrate after changing the CHORDCAT project, transpose, or chord set. Unknown signatures do not select a cell.
+
+## Experiences
+
+- **4×4 Melodies** is the default. Each cell is a variation within one artwork score. Nine paintings have offline-generated visual measurements for all sixteen cells, combined with curated semantic descriptions.
+- **Full Composition** is an experimental comparison mode. Moving toward musical centers changes a browser score, but this mode does not send playable MIDI notes. With browser audio muted, it remains silent and is not part of the CHORDCAT demo.
+
+Narration is optional and off by default. Press Escape or use **Stop all sound** in the facilitator console to stop playback and send MIDI panic messages.
+
+## Deploy for the CHORDCAT test
+
+This is a static Vite app. For Vercel, set the project root to `challenge-6-prototype`, build command to `npm run build`, and output directory to `dist`. Use the resulting HTTPS URL in Chrome or Edge on the computer connected to CHORDCAT. The MIDI permission, port selection, saved calibration, and audio check happen on that computer, not on the deployment server.
 
 ## Project structure
 
-- `src/artwork/` — artwork catalogue, 4×4 mapping, semantic regions, polygons, score metadata
-- `src/interaction/` — region lookup and dwell/hysteresis state machine
-- `src/audio/` — continuous score, region voicing, MIDI output, narration
-- `src/components/ArtworkCanvas.tsx` — natural-ratio image rendering and clean pixel sampling
-- `src/components/DebugPanel.tsx` — facilitator and hardware bridge console
+- `src/artwork/` — artwork catalogue, 4×4 mapping, semantic regions, and generated measurements
+- `src/interaction/` — region lookup and dwell state machine
+- `src/audio/` — MIDI output, CHORDCAT input calibration, sound timing, and narration
+- `src/components/ArtworkCanvas.tsx` — artwork rendering and mouse simulation
+- `src/components/DebugPanel.tsx` — facilitator diagnostics and hardware controls
 
-## Product boundary
-
-Music communicates atmosphere, emphasis, contrast, and relationships; it does not replace semantic description. Meaning comes from the tactile relief and concise narration. This is a hackathon prototype, not disability-user validation, and the final interaction should be co-designed and tested with blind and low-vision visitors.
+Music conveys atmosphere, movement, contrast, and relationships; the tactile layout and concise narration provide spatial and semantic meaning. This remains a hackathon prototype. An accessible museum product would need co-design and testing with blind and low-vision visitors.

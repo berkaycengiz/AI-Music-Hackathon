@@ -1,15 +1,15 @@
 :root {
-  --ink: #f2f0ea;
-  --ink-2: #aaa9a3;
-  --muted: #747570;
-  --bg: #080a0d;
-  --panel: #101318;
-  --panel-2: #171b21;
-  --line: #282d35;
-  --mint: #6fe5cd;
-  --lime: #ecff7a;
-  --amber: #ffbd66;
-  --danger: #ff7676;
+  --ink: #f1eee5;
+  --ink-2: #c4cfcb;
+  --muted: #91aaa8;
+  --bg: #132d33;
+  --panel: #1c3940;
+  --panel-2: #294b52;
+  --line: #4b6970;
+  --mint: #e1bf73;
+  --lime: #e7c980;
+  --amber: #edca82;
+  --danger: #ff9d93;
   --radius: 14px;
   --radius-sm: 8px;
 }
@@ -345,4 +345,139 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--lime); out
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+
+/* Gallery experience adapted from the Synesthesias pitch study. */
+.app-shell {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  background: var(--bg);
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.gallery-header {
+  width: min(1440px, 100%);
+  min-height: 82px;
+  margin: 0 auto;
+  padding: 20px clamp(20px, 4vw, 56px);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.gallery-brand {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(25px, 3vw, 32px);
+  font-style: italic;
+  white-space: nowrap;
+}
+.gallery-header-note {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.facilitator-toggle {
+  padding: 10px 13px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.facilitator-toggle:hover,
+.facilitator-toggle[aria-expanded="true"] { border-color: var(--lime); color: var(--lime); }
+
+.app-main {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  min-height: calc(100vh - 82px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  overflow: visible;
+}
+.app-main.facilitator-open { grid-template-columns: minmax(0, 1fr) 360px; }
+.visitor-area { width: 100%; max-width: 1040px; min-width: 0; margin: 0 auto; padding: 42px clamp(20px, 4vw, 56px) 70px; }
+.visitor-intro { max-width: 760px; margin: 0 auto; padding: 24px 0 54px; text-align: center; }
+.gallery-eyebrow {
+  color: var(--lime);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.22em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.visitor-intro h1 {
+  margin: 18px 0 17px;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(54px, 7vw, 91px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.97;
+}
+.visitor-intro h1 em { display: block; color: var(--lime); font-weight: 400; }
+.visitor-intro p { max-width: 550px; margin: 0 auto; color: var(--ink-2); font-size: clamp(14px, 1.5vw, 17px); line-height: 1.65; }
+.artwork-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.artwork-heading h2 { margin-top: 5px; font-family: "Instrument Serif", Georgia, serif; font-size: clamp(27px, 3vw, 38px); font-style: italic; font-weight: 400; }
+.artwork-count { color: var(--muted); font-size: 12px; letter-spacing: 0.12em; white-space: nowrap; }
+.artwork-frame { margin-top: 18px; padding: 11px; border: 1px solid var(--line); background: var(--panel); box-shadow: 0 32px 65px rgba(4, 15, 18, 0.32); }
+.canvas-area { width: 100%; height: min(65vh, 660px); min-height: 420px; padding: 0; }
+.artwork-canvas-container { max-height: none; border: 0; border-radius: 0; background: var(--bg); box-shadow: none; }
+.exploration-bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+.exploration-state { margin-top: 5px; font-family: "Instrument Serif", Georgia, serif; font-size: 27px; font-style: italic; }
+.start-btn { width: auto; min-width: 190px; border-radius: 0; padding: 15px 24px; background: var(--lime); color: var(--bg); font-size: 12px; }
+.start-btn:hover { background: #f3d992; filter: none; }
+.cell-story { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 20px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+.cell-story-number { color: var(--lime); font-family: "Instrument Serif", Georgia, serif; font-size: 33px; font-style: italic; }
+.cell-story h3 { margin: 7px 0 8px; font-family: "Instrument Serif", Georgia, serif; font-size: 28px; font-weight: 400; }
+.cell-story p { max-width: 700px; color: var(--ink-2); font-size: 13px; line-height: 1.65; }
+.visitor-note { margin-top: 20px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+.debug-area { position: sticky; top: 0; width: 360px; height: 100vh; max-height: 100vh; overflow-y: auto; border-left: 1px solid var(--line); background: var(--panel); }
+.facilitator-controls { display: grid; gap: 10px; padding: 22px 16px 18px; border-bottom: 1px solid var(--line); }
+.facilitator-controls .selector-label:not(:first-child) { margin-top: 10px; }
+.facilitator-controls .artwork-select { max-width: none; padding: 10px 12px; border-radius: 0; background: var(--panel-2); font-size: 12px; }
+.facilitator-controls .mode-switch { width: 100%; display: grid; grid-template-columns: 1fr 1fr; border-radius: 0; background: var(--bg); }
+.facilitator-controls .mode-button { justify-content: center; border-radius: 0; font-size: 10px; }
+.facilitator-mode-note { color: var(--muted); font-size: 10px; line-height: 1.55; }
+.debug-panel { padding-top: 20px; }
+.panel-heading h2,
+.region-performance-card strong,
+.artwork-score-card strong { font-family: "Instrument Serif", Georgia, serif; }
+.calibration-card,
+.artwork-score-card { background: var(--bg); }
+.semantic-mapping { border-color: var(--line); background: rgba(231, 201, 128, 0.04); }
+.mix-track.focus { background: rgba(231, 201, 128, 0.08); border-color: rgba(231, 201, 128, 0.24); }
+.midi-smoke-test { display: grid; gap: 10px; margin-top: 14px; padding: 12px; border: 1px solid rgba(231, 201, 128, 0.45); background: rgba(231, 201, 128, 0.06); }
+.midi-smoke-test strong { color: var(--ink); font-size: 11px; }
+.midi-smoke-test p { margin-top: 4px; color: var(--ink-2); font-size: 10px; line-height: 1.5; }
+.midi-smoke-test button { width: 100%; padding: 10px; border: 0; background: var(--lime); color: var(--bg); font-size: 10px; font-weight: 800; cursor: pointer; }
+.midi-smoke-test button:disabled { opacity: 0.42; cursor: not-allowed; }
+
+@media (max-width: 1060px) {
+  .app-main.facilitator-open { grid-template-columns: minmax(0, 1fr); }
+  .debug-area { position: static; width: 100%; height: auto; max-height: none; overflow: visible; border-left: 0; border-top: 1px solid var(--line); }
+  .debug-panel,
+  .facilitator-controls { max-width: 900px; margin: 0 auto; }
+}
+
+@media (max-width: 680px) {
+  .gallery-header { min-height: 68px; flex-wrap: wrap; gap: 8px 12px; padding: 15px 18px; }
+  .gallery-brand { font-size: 25px; }
+  .gallery-header-note { display: none; }
+  .facilitator-toggle { margin-left: auto; padding: 8px; font-size: 10px; }
+  .visitor-area { padding: 26px 16px 50px; }
+  .visitor-intro { padding: 26px 0 38px; }
+  .visitor-intro h1 { font-size: clamp(53px, 12vw, 72px); }
+  .artwork-frame { padding: 7px; }
+  .canvas-area { height: auto; min-height: 0; padding: 0; }
+  .artwork-canvas-container { width: 100%; height: auto; }
+  .exploration-bar { align-items: stretch; flex-direction: column; }
+  .start-btn { width: 100%; }
+  .cell-story { grid-template-columns: 1fr; gap: 10px; }
 }

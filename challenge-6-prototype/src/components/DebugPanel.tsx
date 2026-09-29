@@ -27,6 +27,7 @@ interface Props {
   chordcatInput: ChordcatInputSnapshot;
   onSelectMidiPort?: (id: string) => void;
   onFullCalibration: () => void;
+  onTestMidiNote?: () => void;
   onTestTrack?: (trackNum: number) => void;
   isNarrationEnabled: boolean;
   onToggleNarration: () => void;
@@ -55,6 +56,7 @@ export function DebugPanel({
   chordcatInput,
   onSelectMidiPort,
   onFullCalibration,
+  onTestMidiNote,
   onTestTrack,
   isNarrationEnabled,
   onToggleNarration,
@@ -209,7 +211,7 @@ export function DebugPanel({
         <div className="section-title-row">
           <h3>CHORDCAT bridge</h3>
           <span className={`micro-badge ${isMidiConnected ? 'connected' : ''}`}>
-            {isMidiConnected ? 'CONNECTED' : 'EMULATED'}
+            {isMidiConnected ? 'OUTPUT SELECTED' : 'NO OUTPUT'}
           </span>
         </div>
         <div className="debug-grid">
@@ -226,9 +228,17 @@ export function DebugPanel({
             ) : midiDeviceName}
           </span>
           <span className="debug-label">Protocol</span>
-          <span className="debug-value">8ch · Note · CC11 · CC74</span>
+          <span className="debug-value">Input Ch 2 · Melody Ch 6</span>
           <span className="debug-label">Input</span>
           <span className="debug-value">{chordcatInput.inputName}</span>
+        </div>
+
+        <div className="midi-smoke-test">
+          <div>
+            <strong>First sound check</strong>
+            <p>Send one C4 note on Channel 6 for one second. Listen through CHORDCAT headphones.</p>
+          </div>
+          <button onClick={onTestMidiNote} disabled={!isMidiConnected}>Send C4 to Track 6</button>
         </div>
 
         <div className={`calibration-card ${inputReady ? 'ready' : ''}`}>

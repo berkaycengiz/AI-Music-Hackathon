@@ -237,11 +237,11 @@ function drawArtworkGrid(
       y + cellHeight / 2,
       Math.max(cellWidth, cellHeight) * 0.8,
     );
-    glow.addColorStop(0, 'rgba(236, 255, 122, 0.22)');
-    glow.addColorStop(1, 'rgba(111, 229, 205, 0.04)');
+    glow.addColorStop(0, 'rgba(231, 201, 128, 0.22)');
+    glow.addColorStop(1, 'rgba(231, 201, 128, 0.04)');
     ctx.fillStyle = glow;
     ctx.fillRect(x, y, cellWidth, cellHeight);
-    ctx.strokeStyle = '#ecff7a';
+    ctx.strokeStyle = '#e7c980';
     ctx.lineWidth = 2;
     ctx.strokeRect(x + 1, y + 1, cellWidth - 2, cellHeight - 2);
     ctx.restore();
@@ -273,7 +273,7 @@ function drawArtworkGrid(
     const label = String(cell).padStart(2, '0');
     ctx.fillStyle = cell === selectedCell ? '#12150a' : 'rgba(10, 13, 16, 0.78)';
     ctx.fillRect(x - 4, y - 3, 24, 16);
-    ctx.fillStyle = cell === selectedCell ? '#ecff7a' : 'rgba(255, 255, 255, 0.82)';
+    ctx.fillStyle = cell === selectedCell ? '#e7c980' : 'rgba(255, 255, 255, 0.82)';
     ctx.fillText(label, x, y);
   }
   ctx.restore();
